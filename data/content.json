@@ -1,0 +1,27 @@
+{
+  "company": {
+    "name": "RENOVA",
+    "tagline": "Apartment and house renovation in Serbia — turnkey solutions.",
+    "description": "We provide construction and renovation services for apartments, houses, offices and commercial properties in Belgrade, Novi Sad and across Serbia.",
+    "phone": "+381 60 000 0000",
+    "email": "info@renova.rs",
+    "address": "Belgrade, Serbia"
+  },
+  "hero": {
+    "title": "Professional Renovation\nfor Your Home in Serbia",
+    "subtitle": "From individual tasks to complete turnkey projects. Quality work, clear timelines, fixed budgets.",
+    "cta": "Get Free Estimate"
+  },
+  "services": [
+    { "title": "Apartment & House Renovation", "icon": "🔨" },
+    { "title": "Complete Turnkey Renovation", "icon": "🏠" },
+    { "title": "Bathroom Renovation", "icon": "🚿" },
+    { "title": "Kitchen Renovation", "icon": "🔍" },
+    { "title": "Tile Installation", "icon": "🧱" },
+    { "title": "Wall & Ceiling Painting", "icon": "🎨" },
+    { "title": "Drywall Installation", "icon": "📐" },
+    { "title": "Electrical Work", "icon": "⚡" },
+    { "title": "Plumbing", "icon": "🚰" },
+    { "title": "Flooring Installation", "icon": "🪵" }
+  ]
+}
