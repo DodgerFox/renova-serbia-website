@@ -1,11 +1,11 @@
 export type Lang = "ru" | "en" | "sr";
 
-export const PHONE_E164 = "381631234567";
-export const PHONE_DISPLAY = "+381 63 123 45 67";
-export const TELEGRAM_URL = "https://t.me/renovaserbia";
-export const TELEGRAM_LABEL = "@renovaserbia";
-export const VIBER_URL = "viber://chat?number=%2B381631234567";
-export const EMAIL = "info@renova.rs";
+export const PHONE_E164 = "381637550611";
+export const PHONE_DISPLAY = "+381 63 755 06 11";
+export const TELEGRAM_URL = "https://t.me/alekseichernovv";
+export const TELEGRAM_LABEL = "@alekseichernovv";
+export const VIBER_URL = "viber://chat?number=%2B381637550611";
+export const EMAIL = "alekseichernovofficial@gmail.com";
 
 type L = Record<Lang, string>;
 
@@ -125,7 +125,9 @@ export const ui = {
     menuOpen: "Открыть меню",
     menuClose: "Закрыть меню",
     heroAlt: "Квартира до чистовой отделки, чистый пол у лестницы",
-    meta: "RENOVA — ремонт квартир в Белграде и Нови-Саде",
+    meta: "Ремонт квартир в Белграде и Нови-Саде — RENOVA",
+    description:
+      "Ремонт квартир под ключ в Белграде и Нови-Саде: электрика, сантехника, штукатурка, плитка и покраска. Цены за м², оплата 50/50 по этапам, бесплатный замер.",
   },
   en: {
     nav: ["Work", "Process", "Quote", "Results", "FAQ", "Enquiry"],
@@ -174,7 +176,9 @@ export const ui = {
     menuOpen: "Open menu",
     menuClose: "Close menu",
     heroAlt: "Apartment before finishes, clear floor by the stairs",
-    meta: "RENOVA — apartment renovation in Belgrade and Novi Sad",
+    meta: "Apartment renovation in Belgrade and Novi Sad — RENOVA",
+    description:
+      "Turnkey apartment renovation in Belgrade and Novi Sad. Electrics, plumbing, plaster, tile and paint, priced per m². Free site measure. Each stage is 50% before and 50% after.",
   },
   sr: {
     nav: ["Radovi", "Tok", "Predračun", "Rezultat", "Pitanja", "Upit"],
@@ -223,6 +227,8 @@ export const ui = {
     menuOpen: "Otvori meni",
     menuClose: "Zatvori meni",
     heroAlt: "Stan pre završnice, čist pod pored stepenica",
-    meta: "RENOVA — renoviranje stanova u Beogradu i Novom Sadu",
+    meta: "Renoviranje stanova u Beogradu i Novom Sadu — RENOVA",
+    description:
+      "Renoviranje stanova ključ u ruke u Beogradu i Novom Sadu: elektrika, vodovod, malter, pločice i krečenje. Cena po m², plaćanje 50/50 po fazama, merenje besplatno.",
   },
 } as const;

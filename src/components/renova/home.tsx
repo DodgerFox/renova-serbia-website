@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Check, Mail, Menu, Phone, Ruler, Send, X } from "lucide-react";
 import {
   EMAIL,
@@ -21,22 +22,15 @@ import {
 
 const navHref = ["#services", "#process", "#estimate", "#work", "#faq", "#request"];
 const langs: Lang[] = ["ru", "en", "sr"];
+const langTo = { ru: "/", en: "/en", sr: "/sr" } as const;
 
-export function HomePage() {
+export function HomePage({ lang }: { lang: Lang }) {
   const [open, setOpen] = useState(false);
-  const [lang, setLang] = useState<Lang>("ru");
   const copy = ui[lang];
 
   useEffect(() => {
-    const saved = localStorage.getItem("renova-lang");
-    if (saved === "en" || saved === "sr" || saved === "ru") setLang(saved);
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.lang = lang === "sr" ? "sr" : lang;
-    document.title = copy.meta;
-    localStorage.setItem("renova-lang", lang);
-  }, [lang, copy.meta]);
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   return (
     <div className="min-h-screen bg-paper text-ink">
@@ -56,7 +50,7 @@ export function HomePage() {
             ))}
           </nav>
           <div className="flex items-center gap-2">
-            <LangSwitch lang={lang} onChange={setLang} />
+            <LangSwitch lang={lang} />
             <a
               href={`tel:+${PHONE_E164}`}
               className="hidden h-11 items-center gap-2 rounded-full bg-ink px-4 text-sm font-semibold text-cream lg:inline-flex"
@@ -240,19 +234,18 @@ export function HomePage() {
   );
 }
 
-function LangSwitch({ lang, onChange }: { lang: Lang; onChange: (lang: Lang) => void }) {
+function LangSwitch({ lang }: { lang: Lang }) {
   return (
     <div className="flex h-11 items-center rounded-full border border-line p-1 text-xs font-bold">
       {langs.map((code) => (
-        <button
+        <Link
           key={code}
-          type="button"
-          onClick={() => onChange(code)}
-          className={`h-9 rounded-full px-2.5 uppercase ${lang === code ? "bg-ink text-cream" : "text-muted"}`}
-          aria-pressed={lang === code}
+          to={langTo[code]}
+          className={`grid h-9 place-items-center rounded-full px-2.5 uppercase ${lang === code ? "bg-ink text-cream" : "text-muted"}`}
+          aria-current={lang === code ? "page" : undefined}
         >
           {code}
-        </button>
+        </Link>
       ))}
     </div>
   );

@@ -1,6 +1,7 @@
-import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import { createRootRoute, HeadContent, Outlet, Scripts, useRouterState } from "@tanstack/react-router";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
+import { langFromPath } from "@/data/seo";
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
@@ -8,12 +9,6 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "RENOVA — ремонт квартир в Белграде и Нови-Саде" },
-      {
-        name: "description",
-        content:
-          "Бригада RENOVA: ремонт под ключ, санузлы, электрика, штукатурка и плитка. Белград и Нови-Сад. Смета в день обращения.",
-      },
       { name: "theme-color", content: "#1a1612" },
     ],
     links: [
@@ -21,23 +16,22 @@ export const Route = createRootRoute({
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/__grok/manifest.webmanifest" },
       { rel: "apple-touch-icon", href: "/__grok/icon-180.png" },
-      {
-        rel: "preconnect",
-        href: "https://fonts.googleapis.com",
-      },
-      {
-        rel: "preconnect",
-        href: "https://fonts.gstatic.com",
-        crossOrigin: "anonymous",
-      },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap",
       },
     ],
   }),
-  component: () => (
-    <html lang="ru" className="antialiased" suppressHydrationWarning>
+  component: Root,
+});
+
+function Root() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const lang = langFromPath(pathname);
+  return (
+    <html lang={lang} className="antialiased" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
@@ -49,5 +43,5 @@ export const Route = createRootRoute({
         <Scripts />
       </body>
     </html>
-  ),
-});
+  );
+}
