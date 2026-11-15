@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Check, Mail, Menu, Phone, Ruler, Send, X } from "lucide-react";
+import { ArrowUpRight, Check, Mail, Menu, MessageCircle, Phone, Ruler, Send, X } from "lucide-react";
 import {
   crewConditions,
+  contactCopy,
   EMAIL,
   PHONE_DISPLAY,
   PHONE_E164,
@@ -29,7 +30,9 @@ const langTo = { ru: "/", en: "/en", sr: "/sr" } as const;
 
 export function HomePage({ lang }: { lang: Lang }) {
   const [open, setOpen] = useState(false);
+  const [contactMessage, setContactMessage] = useState<string | null>(null);
   const copy = ui[lang];
+  const openContact = (message = "") => setContactMessage(message);
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -54,13 +57,14 @@ export function HomePage({ lang }: { lang: Lang }) {
           </nav>
           <div className="flex items-center gap-2">
             <LangSwitch lang={lang} />
-            <a
-              href={`tel:+${PHONE_E164}`}
-              className="hidden h-11 items-center gap-2 rounded-full bg-ink px-4 text-sm font-semibold text-cream lg:inline-flex"
+            <button
+              type="button"
+              onClick={() => openContact()}
+              className="inline-flex h-11 items-center gap-2 rounded-full bg-ink px-3 text-sm font-semibold text-cream sm:px-4"
             >
               <Phone className="size-4" />
-              {PHONE_DISPLAY}
-            </a>
+              <span className="hidden sm:inline">{contactCopy[lang].button}</span>
+            </button>
             <button
               type="button"
               className="grid size-11 place-items-center rounded-full border border-line xl:hidden"
@@ -103,12 +107,13 @@ export function HomePage({ lang }: { lang: Lang }) {
                 {copy.ctaEstimate}
                 <ArrowUpRight className="size-4" />
               </a>
-              <a
-                href="#request"
+              <button
+                type="button"
+                onClick={() => openContact()}
                 className="inline-flex h-12 items-center rounded-full border border-ink px-5 font-semibold"
               >
                 {copy.ctaVisit}
-              </a>
+              </button>
             </div>
             <dl className="mt-10 grid grid-cols-3 gap-4 border-t border-line pt-6">
               {copy.stats.map(([k, v]) => (
@@ -194,7 +199,7 @@ export function HomePage({ lang }: { lang: Lang }) {
           </div>
         </section>
 
-        <Jobs lang={lang} />
+        <Jobs lang={lang} onContact={openContact} />
 
         <section id="faq" className="mx-auto max-w-6xl px-5 py-16">
           <h2 className="font-display text-4xl font-bold">{copy.faqTitle}</h2>
@@ -211,7 +216,7 @@ export function HomePage({ lang }: { lang: Lang }) {
           </div>
         </section>
 
-        <Request lang={lang} />
+        <Request lang={lang} onContact={openContact} />
       </main>
 
       <footer className="border-t border-line">
@@ -229,17 +234,24 @@ export function HomePage({ lang }: { lang: Lang }) {
           <a href="#estimate" className="grid h-12 place-items-center rounded-full border border-ink text-sm font-semibold">
             {copy.mobileEstimate}
           </a>
-          <a href="#request" className="grid h-12 place-items-center rounded-full bg-copper text-sm font-semibold text-cream">
+          <button
+            type="button"
+            onClick={() => openContact()}
+            className="grid h-12 place-items-center rounded-full bg-copper text-sm font-semibold text-cream"
+          >
             {copy.mobileRequest}
-          </a>
+          </button>
         </div>
       </div>
       <div className="h-20 sm:hidden" />
+      {contactMessage !== null ? (
+        <ContactModal lang={lang} message={contactMessage} onClose={() => setContactMessage(null)} />
+      ) : null}
     </div>
   );
 }
 
-function Jobs({ lang }: { lang: Lang }) {
+function Jobs({ lang, onContact }: { lang: Lang; onContact: (message: string) => void }) {
   const copy = jobsCopy[lang];
   return (
     <section id="jobs" className="border-y border-line bg-cream">
@@ -261,14 +273,13 @@ function Jobs({ lang }: { lang: Lang }) {
             <li key={role.title.ru} className="flex flex-col rounded-card border border-line bg-paper p-5">
               <h4 className="font-display text-xl font-bold">{role.title[lang]}</h4>
               <p className="mt-2 flex-1 text-sm text-muted">{role.text[lang]}</p>
-              <a
-                href={`https://wa.me/${PHONE_E164}?text=${encodeURIComponent(applyText(lang, role.title[lang]))}`}
+              <button
+                type="button"
+                onClick={() => onContact(applyText(lang, role.title[lang]))}
                 className="mt-5 inline-flex h-11 items-center justify-center rounded-full bg-ink px-4 text-sm font-semibold text-cream"
-                target="_blank"
-                rel="noreferrer"
               >
                 {copy.apply}
-              </a>
+              </button>
             </li>
           ))}
         </ul>
@@ -287,6 +298,108 @@ function applyText(lang: Lang, role: string) {
   if (lang === "en") return `Hello! I want to join the RENOVA crew. Trade: ${role}.`;
   if (lang === "sr") return `Zdravo! Želim u ekipu RENOVA. Specijalnost: ${role}.`;
   return `Здравствуйте! Хочу в бригаду RENOVA. Специальность: ${role}.`;
+}
+
+function ContactModal({
+  lang,
+  message,
+  onClose,
+}: {
+  lang: Lang;
+  message: string;
+  onClose: () => void;
+}) {
+  const copy = contactCopy[lang];
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  const channels = [
+    { label: copy.phone, detail: PHONE_DISPLAY, href: `tel:+${PHONE_E164}`, icon: Phone },
+    {
+      label: copy.whatsapp,
+      detail: PHONE_DISPLAY,
+      href: `https://wa.me/${PHONE_E164}?text=${encodeURIComponent(message)}`,
+      icon: MessageCircle,
+      external: true,
+    },
+    { label: copy.telegram, detail: TELEGRAM_LABEL, href: TELEGRAM_URL, icon: Send, external: true, copy: true },
+    {
+      label: copy.viber,
+      detail: PHONE_DISPLAY,
+      href: `viber://chat?number=%2B${PHONE_E164}${message ? `&text=${encodeURIComponent(message)}` : ""}`,
+      icon: Phone,
+    },
+    {
+      label: copy.email,
+      detail: EMAIL,
+      href: `mailto:${EMAIL}?subject=${encodeURIComponent("RENOVA")}&body=${encodeURIComponent(message)}`,
+      icon: Mail,
+    },
+  ];
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-ink/50 p-4 sm:items-center"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="contact-title"
+        className="w-full max-w-md rounded-card bg-paper p-5 shadow-xl"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h2 id="contact-title" className="font-display text-2xl font-bold">
+              {copy.title}
+            </h2>
+            <p className="mt-2 text-sm text-muted">{copy.lead}</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={copy.close}
+            className="grid size-11 shrink-0 place-items-center rounded-full border border-line"
+          >
+            <X className="size-5" />
+          </button>
+        </div>
+        <ul className="mt-5 grid gap-2">
+          {channels.map((channel) => {
+            const Icon = channel.icon;
+            return (
+              <li key={channel.label}>
+                <a
+                  href={channel.href}
+                  target={channel.external ? "_blank" : undefined}
+                  rel={channel.external ? "noreferrer" : undefined}
+                  onClick={() => {
+                    if (channel.copy && message) navigator.clipboard?.writeText(message).catch(() => undefined);
+                    onClose();
+                  }}
+                  className="flex items-center gap-3 rounded-2xl border border-line bg-cream px-4 py-3 transition-colors hover:border-ink"
+                >
+                  <span className="grid size-10 place-items-center rounded-full bg-ink text-cream">
+                    <Icon className="size-4" />
+                  </span>
+                  <span>
+                    <span className="block font-semibold">{channel.label}</span>
+                    <span className="block text-sm text-muted">{channel.detail}</span>
+                  </span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
+  );
 }
 
 function LangSwitch({ lang }: { lang: Lang }) {
@@ -396,7 +509,7 @@ function Estimate({ lang }: { lang: Lang }) {
   );
 }
 
-function Request({ lang }: { lang: Lang }) {
+function Request({ lang, onContact }: { lang: Lang; onContact: (message: string) => void }) {
   const copy = ui[lang];
   const [sent, setSent] = useState(false);
   const [name, setName] = useState("");
@@ -423,7 +536,7 @@ function Request({ lang }: { lang: Lang }) {
       .filter(Boolean)
       .join("\n");
     setSent(true);
-    window.open(`https://wa.me/${PHONE_E164}?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+    onContact(text);
   }
 
   return (
