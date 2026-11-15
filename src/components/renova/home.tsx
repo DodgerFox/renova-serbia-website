@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Check, Mail, Menu, Phone, Ruler, Send, X } from "lucide-react";
 import {
+  crewConditions,
   EMAIL,
   PHONE_DISPLAY,
   PHONE_E164,
@@ -13,6 +14,8 @@ import {
   gallery,
   included,
   jobKinds,
+  jobsCopy,
+  openings,
   services,
   steps,
   ui,
@@ -20,7 +23,7 @@ import {
   type Lang,
 } from "@/data/site";
 
-const navHref = ["#services", "#process", "#estimate", "#work", "#faq", "#request"];
+const navHref = ["#services", "#process", "#estimate", "#work", "#jobs", "#faq", "#request"];
 const langs: Lang[] = ["ru", "en", "sr"];
 const langTo = { ru: "/", en: "/en", sr: "/sr" } as const;
 
@@ -191,6 +194,8 @@ export function HomePage({ lang }: { lang: Lang }) {
           </div>
         </section>
 
+        <Jobs lang={lang} />
+
         <section id="faq" className="mx-auto max-w-6xl px-5 py-16">
           <h2 className="font-display text-4xl font-bold">{copy.faqTitle}</h2>
           <div className="mt-8 divide-y divide-line border-y border-line">
@@ -232,6 +237,56 @@ export function HomePage({ lang }: { lang: Lang }) {
       <div className="h-20 sm:hidden" />
     </div>
   );
+}
+
+function Jobs({ lang }: { lang: Lang }) {
+  const copy = jobsCopy[lang];
+  return (
+    <section id="jobs" className="border-y border-line bg-cream">
+      <div className="mx-auto max-w-6xl px-5 py-16">
+        <h2 className="max-w-xl font-display text-4xl font-bold">{copy.title}</h2>
+        <p className="mt-4 max-w-xl text-muted">{copy.lead}</p>
+        <h3 className="mt-10 font-display text-2xl font-bold">{copy.conditions}</h3>
+        <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+          {crewConditions.map((line) => (
+            <li key={line.ru} className="flex items-start gap-3 text-sm">
+              <Check className="mt-0.5 size-4 shrink-0 text-copper" />
+              {line[lang]}
+            </li>
+          ))}
+        </ul>
+        <h3 className="mt-10 font-display text-2xl font-bold">{copy.openings}</h3>
+        <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {openings.map((role) => (
+            <li key={role.title.ru} className="flex flex-col rounded-card border border-line bg-paper p-5">
+              <h4 className="font-display text-xl font-bold">{role.title[lang]}</h4>
+              <p className="mt-2 flex-1 text-sm text-muted">{role.text[lang]}</p>
+              <a
+                href={`https://wa.me/${PHONE_E164}?text=${encodeURIComponent(applyText(lang, role.title[lang]))}`}
+                className="mt-5 inline-flex h-11 items-center justify-center rounded-full bg-ink px-4 text-sm font-semibold text-cream"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {copy.apply}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-6 text-sm text-muted">
+          {copy.applyNote}{" "}
+          <a href={TELEGRAM_URL} className="font-semibold text-ink" target="_blank" rel="noreferrer">
+            {TELEGRAM_LABEL}
+          </a>
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function applyText(lang: Lang, role: string) {
+  if (lang === "en") return `Hello! I want to join the RENOVA crew. Trade: ${role}.`;
+  if (lang === "sr") return `Zdravo! Želim u ekipu RENOVA. Specijalnost: ${role}.`;
+  return `Здравствуйте! Хочу в бригаду RENOVA. Специальность: ${role}.`;
 }
 
 function LangSwitch({ lang }: { lang: Lang }) {

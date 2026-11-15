@@ -77,9 +77,54 @@ export function estimate(kind: JobKind, area: number) {
   };
 }
 
+export const openings: { title: L; text: L }[] = [
+  { title: t("Штукатур-маляр", "Plasterer and painter", "Malterer i moler"), text: t("Маяки, шпаклёвка и покраска жилых комнат.", "Guides, skim coat and paint in living rooms.", "Vodilice, glet i krečenje stambenih soba.") },
+  { title: t("Плиточник", "Tiler", "Keramičar"), text: t("Крупный формат, санузлы, ровная плоскость и затирка.", "Large format, bathrooms, a flat plane and grout.", "Veliki format, kupatila, ravna površina i fugovanje.") },
+  { title: t("Электрик", "Electrician", "Električar"), text: t("Новая разводка, щиток и точки по схеме.", "New wiring, board and points to plan.", "Nova instalacija, tabla i tačke po šemi.") },
+  { title: t("Сантехник", "Plumber", "Vodoinstalater"), text: t("Скрытая разводка и перенос стояков.", "Concealed pipes and moving risers.", "Skrivena instalacija i pomeranje vertikala.") },
+  { title: t("Гипсокартон", "Drywall", "Gips-karton"), text: t("Перегородки, ниши и короба.", "Partitions, niches and boxing.", "Pregrade, niše i kutije.") },
+  { title: t("Подсобный", "Labourer", "Pomoćni radnik"), text: t("Демонтаж, поднос материала и уборка объекта.", "Strip-out, moving materials and keeping the site clear.", "Rušenje, prenos materijala i čišćenje objekta.") },
+];
+
+export const crewConditions: L[] = [
+  t("Объекты в Белграде и Нови-Саде, работаете в составе бригады.", "Sites in Belgrade and Novi Sad, as part of the crew.", "Objekti u Beogradu i Novom Sadu, rad u sastavu ekipe."),
+  t("Оплата за сданный объём: закрыли этап — расчёт в евро.", "Pay for finished volume: close a stage, get paid in euros.", "Isplata za predatu količinu: zatvorena faza — obračun u evrima."),
+  t("Ставку называем по специальности до выхода на объект.", "The rate is agreed by trade before you start.", "Cenu dogovaramo po struci pre izlaska na objekat."),
+  t("Свой инструмент — плюс. Расходники есть на объекте.", "Your own tools are a plus. Consumables are on site.", "Sopstveni alat je prednost. Potrošni materijal je na objektu."),
+  t("Можно выйти на один этап или остаться в постоянном составе.", "Join for one stage, or stay on the crew.", "Možete na jednu fazu ili da ostanete u stalnom sastavu."),
+  t("На объекте говорят по-русски. Сербский на старте не обязателен.", "Russian is spoken on site. Serbian is not required to start.", "Na objektu se govori ruski. Srpski na početku nije obavezan."),
+];
+
+export const jobsCopy = {
+  ru: {
+    title: "Работа для мастеров",
+    lead: "Ищем людей в бригаду RENOVA. Нужен чистый результат и умение держать этап, а не обещание «сделаем быстро».",
+    conditions: "Условия",
+    openings: "Открытые места",
+    apply: "Написать в WhatsApp",
+    applyNote: "В сообщении будет ваша специальность. Можно сразу в Telegram.",
+  },
+  en: {
+    title: "Work for trades",
+    lead: "RENOVA is hiring people for the crew. We need a clean finish and a stage you can hold, not a promise to go faster.",
+    conditions: "Conditions",
+    openings: "Open roles",
+    apply: "Message on WhatsApp",
+    applyNote: "The message includes the trade. Telegram works too.",
+  },
+  sr: {
+    title: "Posao za majstore",
+    lead: "RENOVA traži ljude u ekipu. Treba čist rezultat i faza koja se drži, ne obećanje da će biti brzo.",
+    conditions: "Uslovi",
+    openings: "Otvorena mesta",
+    apply: "Pišite na WhatsApp",
+    applyNote: "U poruci će biti vaša specijalnost. Može i Telegram.",
+  },
+} as const;
+
 export const ui = {
   ru: {
-    nav: ["Работы", "Как идём", "Смета", "Результат", "Вопросы", "Заявка"],
+    nav: ["Работы", "Как идём", "Смета", "Результат", "Вакансии", "Вопросы", "Заявка"],
     cities: "Белград · Нови-Сад",
     h1: "Ремонт квартиры без сюрпризов в смете",
     lead: "Бригада RENOVA закрывает объект целиком: от демонтажа до плитки и покраски. Все работы считаются за квадратный метр.",
@@ -130,7 +175,7 @@ export const ui = {
       "Ремонт квартир под ключ в Белграде и Нови-Саде: электрика, сантехника, штукатурка, плитка и покраска. Цены за м², оплата 50/50 по этапам, бесплатный замер.",
   },
   en: {
-    nav: ["Work", "Process", "Quote", "Results", "FAQ", "Enquiry"],
+    nav: ["Work", "Process", "Quote", "Results", "Jobs", "FAQ", "Enquiry"],
     cities: "Belgrade · Novi Sad",
     h1: "Apartment renovation with a quote you can read",
     lead: "RENOVA takes the whole job: strip-out through tile and paint. Every trade is priced per square metre.",
@@ -181,7 +226,7 @@ export const ui = {
       "Turnkey apartment renovation in Belgrade and Novi Sad. Electrics, plumbing, plaster, tile and paint, priced per m². Free site measure. Each stage is 50% before and 50% after.",
   },
   sr: {
-    nav: ["Radovi", "Tok", "Predračun", "Rezultat", "Pitanja", "Upit"],
+    nav: ["Radovi", "Tok", "Predračun", "Rezultat", "Posao", "Pitanja", "Upit"],
     cities: "Beograd · Novi Sad",
     h1: "Renoviranje stana bez iznenađenja u predračunu",
     lead: "Ekipa RENOVA zatvara objekat od rušenja do pločica i krečenja. Svi radovi se računaju po kvadratnom metru.",

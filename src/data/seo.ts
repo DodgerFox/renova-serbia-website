@@ -3,6 +3,7 @@ import {
   PHONE_DISPLAY,
   TELEGRAM_URL,
   faqs,
+  openings,
   services,
   ui,
   type Lang,
@@ -124,6 +125,31 @@ function jsonLd(lang: Lang, origin: string, url: string) {
           acceptedAnswer: { "@type": "Answer", text: item.a[lang] },
         })),
       },
+      ...openings.map((role) => ({
+        "@type": "JobPosting",
+        title: role.title[lang],
+        description: `${role.text[lang]} Belgrade and Novi Sad. Pay for completed stages, in euros.`,
+        datePosted: "2026-11-15",
+        employmentType: "CONTRACTOR",
+        hiringOrganization: {
+          "@type": "Organization",
+          name: "RENOVA",
+          sameAs: url,
+          email: EMAIL,
+          telephone: PHONE_DISPLAY,
+        },
+        jobLocation: [
+          {
+            "@type": "Place",
+            address: { "@type": "PostalAddress", addressLocality: "Belgrade", addressCountry: "RS" },
+          },
+          {
+            "@type": "Place",
+            address: { "@type": "PostalAddress", addressLocality: "Novi Sad", addressCountry: "RS" },
+          },
+        ],
+        applicantLocationRequirements: { "@type": "Country", name: "Serbia" },
+      })),
     ],
   };
 }
