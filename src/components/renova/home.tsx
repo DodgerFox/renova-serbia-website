@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Check, Mail, Menu, MessageCircle, Phone, Ruler, Send, X } from "lucide-react";
+import { ArrowUpRight, Check, ChevronDown, Mail, Menu, MessageCircle, Phone, Ruler, Send, X } from "lucide-react";
 import {
   crewConditions,
   contactCopy,
@@ -16,6 +16,7 @@ import {
   included,
   jobKinds,
   jobsCopy,
+  markets,
   openings,
   services,
   steps,
@@ -446,66 +447,151 @@ function Estimate({ lang }: { lang: Lang }) {
   const copy = ui[lang];
   const [kind, setKind] = useState<JobKind>("turnkey");
   const [area, setArea] = useState(55);
+  const [openRate, setOpenRate] = useState<string | null>(null);
   const result = useMemo(() => estimate(kind, area), [kind, area]);
   const locale = lang === "en" ? "en-GB" : "ru-RU";
 
   return (
     <section id="estimate" className="border-y border-line bg-sand/60">
-      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 lg:grid-cols-2">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-widest text-copper">{copy.estimateKicker}</p>
-          <h2 className="mt-3 font-display text-4xl font-bold">{copy.estimateTitle}</h2>
-          <p className="mt-4 max-w-md text-muted">{copy.estimateLead}</p>
-          <div className="mt-8 flex flex-wrap gap-2">
-            {jobKinds.map((job) => (
-              <button
-                key={job.id}
-                type="button"
-                onClick={() => setKind(job.id)}
-                className={`h-11 rounded-full px-4 text-sm font-semibold ${
-                  kind === job.id ? "bg-ink text-cream" : "border border-line bg-cream"
-                }`}
-              >
-                {job.label[lang]}
-              </button>
-            ))}
+      <div className="mx-auto max-w-6xl px-5 py-16">
+        <h2 className="font-display text-4xl font-bold">{copy.ratesTitle}</h2>
+        <p className="mt-3 max-w-xl text-muted">{copy.ratesLead}</p>
+        <div className="mt-8 overflow-hidden rounded-card border border-line bg-cream">
+          <div className="grid grid-cols-[1fr_4.5rem_4.5rem] gap-2 border-b border-line px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted sm:grid-cols-[1fr_7rem_7rem] sm:px-5">
+            <span>{copy.colWork}</span>
+            <span className="text-right">{copy.colOurs}</span>
+            <span className="text-right">{copy.colMarket}</span>
           </div>
-          <p className="mt-3 text-sm text-muted">{jobKinds.find((j) => j.id === kind)?.hint[lang]}</p>
-          <label className="mt-8 block text-sm font-semibold" htmlFor="area">
-            {copy.area}: <span className="tabular-nums">{area}</span>
-          </label>
-          <input
-            id="area"
-            type="range"
-            min={kind === "bath" ? 3 : 8}
-            max={kind === "bath" ? 14 : kind === "kitchen" ? 24 : 140}
-            value={area}
-            onChange={(e) => setArea(Number(e.target.value))}
-            className="mt-3 w-full accent-copper"
-          />
+          {services.map((item) => {
+            const market = markets.find((row) => row.n === item.n);
+            const open = openRate === item.n;
+            const scale = Math.max(item.high, market?.high ?? 0, 1);
+            return (
+              <div key={item.n} className="border-b border-line last:border-b-0">
+                <button
+                  type="button"
+                  aria-expanded={open}
+                  onClick={() => setOpenRate(open ? null : item.n)}
+                  className={`grid w-full grid-cols-[1fr_4.5rem_4.5rem] items-center gap-2 px-4 py-3 text-left sm:grid-cols-[1fr_7rem_7rem] sm:px-5 ${
+                    open ? "bg-paper" : ""
+                  }`}
+                >
+                  <span className="flex items-center gap-2 font-semibold">
+                    <ChevronDown className={`size-4 shrink-0 text-copper transition ${open ? "rotate-180" : ""}`} />
+                    <span>{item.title[lang]}</span>
+                  </span>
+                  <span className="text-right font-display font-bold tabular-nums text-copper">
+                    {item.low}–{item.high}
+                  </span>
+                  <span className="text-right font-display font-bold tabular-nums">
+                    {market?.low != null && market.high != null ? `${market.low}–${market.high}` : "—"}
+                  </span>
+                </button>
+                {open && market ? (
+                  <div className="grid gap-4 bg-paper px-4 pb-5 sm:px-5">
+                    <p className="text-sm font-semibold text-copper">{market.verdict[lang]}</p>
+                    <div className="grid gap-3">
+                      <RateBar label="RENOVA" low={item.low} high={item.high} scale={scale} tone="ours" />
+                      {market.low != null && market.high != null ? (
+                        <RateBar label={copy.colMarket} low={market.low} high={market.high} scale={scale} tone="market" />
+                      ) : null}
+                    </div>
+                    <p className="max-w-2xl text-sm leading-relaxed text-muted">{market.note[lang]}</p>
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
-        <div className="flex flex-col justify-between rounded-card bg-ink p-6 text-cream sm:p-8">
+        <p className="mt-3 max-w-2xl text-sm text-muted">{copy.ratesFoot}</p>
+
+        <div className="mt-16 grid gap-10 lg:grid-cols-2">
           <div>
-            <p className="flex items-center gap-2 text-sm text-sand">
-              <Ruler className="size-4" />
-              {copy.labour}
-            </p>
-            <p className="mt-6 font-display text-5xl font-extrabold tabular-nums">
-              {result.perLow}–{result.perHigh} {copy.per}
-            </p>
-            <p className="mt-4 text-sand">
-              {copy.total}: {result.low.toLocaleString(locale)}–{result.high.toLocaleString(locale)} €
-            </p>
+            <p className="text-sm font-semibold uppercase tracking-widest text-copper">{copy.estimateKicker}</p>
+            <h2 className="mt-3 font-display text-4xl font-bold">{copy.estimateTitle}</h2>
+            <p className="mt-4 max-w-md text-muted">{copy.estimateLead}</p>
+            <div className="mt-8 flex flex-wrap gap-2">
+              {jobKinds.map((job) => (
+                <button
+                  key={job.id}
+                  type="button"
+                  onClick={() => setKind(job.id)}
+                  className={`h-11 rounded-full px-4 text-sm font-semibold ${
+                    kind === job.id ? "bg-ink text-cream" : "border border-line bg-cream"
+                  }`}
+                >
+                  {job.label[lang]}
+                </button>
+              ))}
+            </div>
+            <p className="mt-3 text-sm text-muted">{jobKinds.find((j) => j.id === kind)?.hint[lang]}</p>
+            <label className="mt-8 block text-sm font-semibold" htmlFor="area">
+              {copy.area}: <span className="tabular-nums">{area}</span>
+            </label>
+            <input
+              id="area"
+              type="range"
+              min={kind === "bath" ? 3 : 8}
+              max={kind === "bath" ? 14 : kind === "kitchen" ? 24 : 140}
+              value={area}
+              onChange={(e) => setArea(Number(e.target.value))}
+              className="mt-3 w-full accent-copper"
+            />
           </div>
-          <a
-            href="#request"
-            className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-copper px-5 font-semibold text-cream"
-          >
-            {copy.book}
-          </a>
+          <div className="flex flex-col justify-between rounded-card bg-ink p-6 text-cream sm:p-8">
+            <div>
+              <p className="flex items-center gap-2 text-sm text-sand">
+                <Ruler className="size-4" />
+                {copy.labour}
+              </p>
+              <p className="mt-6 font-display text-5xl font-extrabold tabular-nums">
+                {result.perLow}–{result.perHigh} {copy.per}
+              </p>
+              <p className="mt-4 text-sand">
+                {copy.total}: {result.low.toLocaleString(locale)}–{result.high.toLocaleString(locale)} €
+              </p>
+            </div>
+            <a
+              href="#request"
+              className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-copper px-5 font-semibold text-cream"
+            >
+              {copy.book}
+            </a>
+          </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function RateBar({
+  label,
+  low,
+  high,
+  scale,
+  tone,
+}: {
+  label: string;
+  low: number;
+  high: number;
+  scale: number;
+  tone: "ours" | "market";
+}) {
+  const left = (low / scale) * 100;
+  const width = Math.max(((high - low) / scale) * 100, 4);
+  return (
+    <div className="grid grid-cols-[5.5rem_1fr_auto] items-center gap-3">
+      <span className="text-xs font-semibold uppercase tracking-wide text-muted">{label}</span>
+      <span className="relative h-3 rounded-full bg-sand">
+        <span
+          className={`absolute top-0 h-3 rounded-full ${tone === "ours" ? "bg-copper" : "bg-ink"}`}
+          style={{ left: `${left}%`, width: `${width}%` }}
+        />
+      </span>
+      <span className="w-14 text-right text-sm font-semibold tabular-nums">
+        {low}–{high}
+      </span>
+    </div>
   );
 }
 

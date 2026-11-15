@@ -24,6 +24,128 @@ export const services: { n: string; low: number; high: number; title: L; text: L
   { n: "10", low: 14, high: 26, title: t("Потолки", "Ceilings", "Plafoni"), text: t("Натяжные и гипсокартонные потолки со светом.", "Stretch and drywall ceilings with lighting.", "Zategnuti i gipsani plafoni sa rasvetom.") },
 ];
 
+export type MarketRow = {
+  n: string;
+  low: number | null;
+  high: number | null;
+  verdict: L;
+  note: L;
+};
+
+/** Belgrade labour bands, autumn 2026. null = the market does not quote this per m². */
+export const markets: MarketRow[] = [
+  {
+    n: "01",
+    low: 10,
+    high: 18,
+    verdict: t("Внутри рынка", "Inside the market", "U okviru tržišta"),
+    note: t(
+      "Сбивка штукатурки около 12 €, старая плитка 15, перегородка 18. Ваши 8–16 попадают в эту вилку.",
+      "Knocking plaster is about €12, old tile €15, a partition €18. Your €8–16 sits inside that.",
+      "Obijanje maltera je oko 12 €, stara keramika 15, pregrada 18. Vaših 8–16 je u tom rasponu.",
+    ),
+  },
+  {
+    n: "02",
+    low: 13,
+    high: 47,
+    verdict: t("Верх полки", "Top of the range", "Gornji deo"),
+    note: t(
+      "Ваши 25–45 — только работа. Опубликованный стандарт с кабелем 13–24 €/м² пола, повышенный 30–47. Для простой замены это дорого, для полной перекладки со щитом — верх.",
+      "Your €25–45 is labour only. Published jobs with cable run €13–24/m² of floor for a standard install, €30–47 for a higher spec. A basic swap is pricey; a full rewire with a new board is the top of the shelf.",
+      "Vaših 25–45 je samo rad. Objavljeni standard sa kablom je 13–24 €/m² poda, viši nivo 30–47. Obična zamena je skupa; puna prepravka sa tablom je vrh.",
+    ),
+  },
+  {
+    n: "03",
+    low: null,
+    high: null,
+    verdict: t("Не за квадрат", "Not priced per m²", "Ne po kvadratu"),
+    note: t(
+      "Рынок почти не ставит водопровод за м² квартиры: час 13–21 €, новая разводка санузла 340–1 000 € за комнату. 30–55 €/м² читайте как площадь мокрых зон, не всей квартиры.",
+      "The market rarely prices plumbing per m² of the flat: €13–21 an hour, a new bathroom run €340–1,000 for the room. Read €30–55/m² as the wet area, not the whole apartment.",
+      "Tržište skoro ne računa vodovod po m² stana: sat 13–21 €, nova instalacija kupatila 340–1.000 € za prostoriju. 30–55 €/m² čitajte kao mokre zone, ne ceo stan.",
+    ),
+  },
+  {
+    n: "04",
+    low: 5,
+    high: 12,
+    verdict: t("Выше типичного", "Above the usual rate", "Iznad uobičajenog"),
+    note: t(
+      "Машинная штукатурка в Белграде часто 5–10 €/м² стены, только работа. Ручная по маякам в квартире ближе к вашей вилке 9–15.",
+      "Machine plaster in Belgrade is often €5–10/m² of wall, labour only. Hand plaster on guides in a flat sits closer to your €9–15.",
+      "Mašinski malter u Beogradu je često 5–10 €/m² zida, samo rad. Ručni po vodilicama u stanu bliži je vaših 9–15.",
+    ),
+  },
+  {
+    n: "05",
+    low: 8,
+    high: 14,
+    verdict: t("Выше типичного", "Above the usual rate", "Iznad uobičajenog"),
+    note: t(
+      "Ориентир по труду без смеси: открытых прайсов мало, обычно 8–14 €/м². Ваши 12–20 — верх этой полки.",
+      "A labour guide without the mix: public lists are thin, usually €8–14/m². Your €12–20 is the top of that shelf.",
+      "Okvir za rad bez smeše: javnih cenovnika je malo, obično 8–14 €/m². Vaših 12–20 je vrh te police.",
+    ),
+  },
+  {
+    n: "06",
+    low: 14,
+    high: 26,
+    verdict: t("Выше типичного", "Above the usual rate", "Iznad uobičajenog"),
+    note: t(
+      "Простая зашивка около 14 €. Перегородка с каркасом обычно 18–28. Ваши 20–36 — верх, если это ниши и короба, а не ровная стена.",
+      "A plain lining is about €14. A framed partition is usually €18–28. Your €20–36 is the top end when it is niches and boxing, not a flat wall.",
+      "Obična obloga je oko 14 €. Pregrada sa konstrukcijom obično 18–28. Vaših 20–36 je vrh kad su niše i kutije, ne ravan zid.",
+    ),
+  },
+  {
+    n: "07",
+    low: 5,
+    high: 9,
+    verdict: t("Выше типичного", "Above the usual rate", "Iznad uobičajenog"),
+    note: t(
+      "За м² стены, только труд: глет и покраска в Белграде чаще 5–9 €. Если ту же сумму считать от пола, 8–14 уже недорого: стены и потолок больше пола примерно в 2,5–3 раза.",
+      "Per m² of wall, labour only: skim and paint in Belgrade is more often €5–9. The same €8–14 per m² of floor is not expensive — walls and ceiling are about 2.5–3 times the floor.",
+      "Po m² zida, samo rad: glet i krečenje u Beogradu češće je 5–9 €. Istih 8–14 po m² poda nije skupo — zidovi i plafon su oko 2,5–3 puta veći od poda.",
+    ),
+  },
+  {
+    n: "08",
+    low: 18,
+    high: 40,
+    verdict: t("Внутри рынка", "Inside the market", "U okviru tržišta"),
+    note: t(
+      "Стандартная плитка часто 15–22 €. Крупный формат 25–40, ещё крупнее — выше. Ваши 22–42 как раз про крупный формат.",
+      "Standard tile is often €15–22. Large format is €25–40, and bigger still costs more. Your €22–42 is the large-format band.",
+      "Standardna keramika je često 15–22 €. Veliki format 25–40, još veći ide više. Vaših 22–42 je baš veliki format.",
+    ),
+  },
+  {
+    n: "09",
+    low: null,
+    high: null,
+    verdict: t("Другая единица", "Different unit", "Druga jedinica"),
+    note: t(
+      "Мы считаем м² проёма. Мастера чаще называют цену за дверь или окно целиком, поэтому прямую вилку за м² не ставим.",
+      "We price per m² of opening. Trades usually quote a whole door or window, so there is no honest €/m² band to put beside it.",
+      "Mi računamo m² otvora. Majstori češće kažu cenu za cela vrata ili prozor, zato ne stavljamo raspon po m².",
+    ),
+  },
+  {
+    n: "10",
+    low: 12,
+    high: 22,
+    verdict: t("Чуть выше середины", "A bit above the middle", "Malo iznad sredine"),
+    note: t(
+      "Гипсокартонный или натяжной потолок, только работа, обычно 12–22 €. Полотно и свет считаются отдельно и часто дороже работы.",
+      "A drywall or stretch ceiling, labour only, is usually €12–22. The sheet and the lights are separate and often cost more than the labour.",
+      "Gipsani ili zategnuti plafon, samo rad, obično je 12–22 €. Platno i rasveta idu odvojeno i često koštaju više od rada.",
+    ),
+  },
+];
+
 export const steps: { n: string; title: L; text: L }[] = [
   { n: "01", title: t("Замер", "Measure", "Merenje"), text: t("Приезжаем в Белград или Нови-Сад, снимаем размеры и фиксируем задачу.", "We come to Belgrade or Novi Sad, measure and lock the brief.", "Dolazimo u Beograd ili Novi Sad, merimo i beležimo zadatak.") },
   { n: "02", title: t("Смета", "Quote", "Predračun"), text: t("Разбивка по работам и материалам. Цена работ — за м².", "Split into labour and materials. Labour is priced per m².", "Razdvojeno na radove i materijal. Rad se računa po m².") },
@@ -180,6 +302,12 @@ export const ui = {
     estimateKicker: "Ориентир",
     estimateTitle: "Смета за квадратный метр",
     estimateLead: "Ставка за м² × площадь. Это разговорная цифра: точную фиксируем после замера.",
+    ratesTitle: "Смета по работам",
+    ratesLead: "Нажмите строку — сравнение с Белградом, осень 2026. Только работа, материалы отдельно.",
+    colWork: "Работа",
+    colOurs: "RENOVA",
+    colMarket: "Рынок",
+    ratesFoot: "Строки не складываются: у каждой своя поверхность. Пакет ниже — это уже ставка за м² пола.",
     area: "Площадь, м²",
     labour: "Работы, без материалов",
     total: "Итого за площадь",
@@ -231,6 +359,12 @@ export const ui = {
     estimateKicker: "Guide",
     estimateTitle: "A quote per square metre",
     estimateLead: "Rate per m² times the area. A figure to talk from — the contract number comes after we measure.",
+    ratesTitle: "Rates by trade",
+    ratesLead: "Tap a row for Belgrade, autumn 2026. Labour only, materials separate.",
+    colWork: "Trade",
+    colOurs: "RENOVA",
+    colMarket: "Market",
+    ratesFoot: "Do not add the rows: each one is a different surface. The package below is a rate per m² of floor.",
     area: "Area, m²",
     labour: "Labour, materials excluded",
     total: "Total for this area",
@@ -282,6 +416,12 @@ export const ui = {
     estimateKicker: "Okvir",
     estimateTitle: "Predračun po kvadratu",
     estimateLead: "Cena po m² × površina. Broj za razgovor: tačan iznos fiksiramo posle merenja.",
+    ratesTitle: "Predračun po radovima",
+    ratesLead: "Dodirnite red — poređenje sa Beogradom, jesen 2026. Samo rad, materijal odvojeno.",
+    colWork: "Rad",
+    colOurs: "RENOVA",
+    colMarket: "Tržište",
+    ratesFoot: "Redove ne sabirajte: svaki je druga površina. Paket ispod je cena po m² poda.",
     area: "Površina, m²",
     labour: "Radovi, bez materijala",
     total: "Zbir za ovu površinu",
