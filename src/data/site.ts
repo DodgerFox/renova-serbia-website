@@ -53,7 +53,7 @@ export const gallery: { src: string; title: L; caption: L }[] = [
   { src: "/photos/bath.jpg", title: t("Санузел", "Bathroom", "Kupatilo"), caption: t("Плитка, скрытая сантехника, ниша", "Tile, concealed plumbing, niche", "Pločice, skrivena instalacija, niša") },
   { src: "/photos/kitchen.jpg", title: t("Кухня", "Kitchen", "Kuhinja"), caption: t("Чистовая отделка и столешница", "Finish and worktop", "Završna obrada i radna ploča") },
   { src: "/photos/living.jpg", title: t("Комнаты", "Rooms", "Sobe"), caption: t("Шпаклёвка и покраска", "Skim and paint", "Glet i krečenje") },
-  { src: "/photos/tile-floor.jpg", title: t("Плитка", "Tile", "Pločice"), caption: t("Крупный формат, ровная плоскость", "Large format, flat plane", "Veliki format, ravna površina") },
+  { src: "/photos/tile-laid.jpg", title: t("Плитка", "Tile", "Pločice"), caption: t("Крупный формат, ровная плоскость", "Large format, flat plane", "Veliki format, ravna površina") },
   { src: "/photos/plaster.jpg", title: t("Штукатурка", "Plaster", "Malter"), caption: t("Стены под чистовую", "Walls ready to finish", "Zidovi spremni za završnicu") },
   { src: "/photos/hero-clean.jpg", title: t("Подготовка", "Prep", "Priprema"), caption: t("Объект до чистовых работ", "Before the finish coats", "Pre završnih radova") },
 ];
