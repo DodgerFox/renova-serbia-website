@@ -118,9 +118,9 @@ export function HomePage({ lang }: { lang: Lang }) {
 
       <main id="top">
         <section className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 pt-10 lg:grid-cols-12 lg:pt-16">
-          <div className="lg:col-span-6">
+          <div className="min-w-0 lg:col-span-6">
             <p className="text-sm font-semibold uppercase tracking-widest text-copper">{copy.cities}</p>
-            <h1 className="mt-4 font-display text-5xl font-extrabold leading-none tracking-tight sm:text-6xl">
+            <h1 className="mt-4 max-w-full font-display text-[2.35rem] font-extrabold leading-[0.95] tracking-tight text-balance sm:text-5xl lg:text-[2.65rem] xl:text-5xl">
               {copy.h1}
             </h1>
             <p className="mt-6 max-w-md text-lg leading-relaxed text-muted">{copy.lead}</p>
@@ -515,7 +515,7 @@ function WorkSlider({ lang }: { lang: Lang }) {
   const go = (next: number) => setIndex((next + count) % count);
 
   return (
-    <div className="lg:col-span-6">
+    <div className="min-w-0 lg:col-span-6">
       <div
         className="relative"
         onTouchStart={(e) => {
