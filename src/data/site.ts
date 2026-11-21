@@ -199,7 +199,7 @@ export const ui = {
     ctaVisit: "Вызвать на замер",
     stats: [
       ["за м²", "цена на каждый вид работ"],
-      ["50%", "до и после приёмки"],
+      ["50% / 50%", "предоплата/постоплата по этапам"],
       ["0 €", "замер без оплаты"],
     ],
     onSite: "На объекте",
@@ -263,7 +263,7 @@ export const ui = {
     ctaVisit: "Book a measure",
     stats: [
       ["per m²", "a rate for every trade"],
-      ["50%", "before and after acceptance"],
+      ["50% / 50%", "prepay / balance by stage"],
       ["€0", "the measure is free"],
     ],
     onSite: "On site",
@@ -327,7 +327,7 @@ export const ui = {
     ctaVisit: "Zakaži merenje",
     stats: [
       ["po m²", "cena za svaku vrstu radova"],
-      ["50%", "pre i posle prijema"],
+      ["50% / 50%", "avans / ostatak po fazama"],
       ["0 €", "merenje bez naknade"],
     ],
     onSite: "Na objektu",

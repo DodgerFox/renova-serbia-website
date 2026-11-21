@@ -122,7 +122,7 @@ export function HomePage({ lang }: { lang: Lang }) {
             <dl className="mt-10 grid grid-cols-3 gap-4 border-t border-line pt-6">
               {copy.stats.map(([k, v]) => (
                 <div key={k}>
-                  <dt className="font-display text-2xl font-bold">{k}</dt>
+                  <dt className="font-display text-lg font-bold leading-tight sm:text-2xl">{k}</dt>
                   <dd className="mt-1 text-sm leading-snug text-muted">{v}</dd>
                 </div>
               ))}
