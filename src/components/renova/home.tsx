@@ -465,7 +465,6 @@ function Estimate({ lang }: { lang: Lang }) {
           {services.map((item) => {
             const market = markets.find((row) => row.n === item.n);
             const open = openRate === item.n;
-            const scale = Math.max(item.high, market?.high ?? 0, 1);
             return (
               <div key={item.n} className="border-b border-line last:border-b-0">
                 <button
@@ -487,17 +486,8 @@ function Estimate({ lang }: { lang: Lang }) {
                     {market?.low != null && market.high != null ? `${market.low}–${market.high}` : "—"}
                   </span>
                 </button>
-                {open && market ? (
-                  <div className="grid gap-4 bg-paper px-4 pb-5 sm:px-5">
-                    <p className="text-sm font-semibold text-copper">{market.verdict[lang]}</p>
-                    <div className="grid gap-3">
-                      <RateBar label="RENOVA" low={item.low} high={item.high} scale={scale} tone="ours" />
-                      {market.low != null && market.high != null ? (
-                        <RateBar label={copy.colMarket} low={market.low} high={market.high} scale={scale} tone="market" />
-                      ) : null}
-                    </div>
-                    <p className="max-w-2xl text-sm leading-relaxed text-muted">{market.note[lang]}</p>
-                  </div>
+                {open ? (
+                  <p className="bg-paper px-4 pb-5 text-sm leading-relaxed text-muted sm:px-5">{item.detail[lang]}</p>
                 ) : null}
               </div>
             );
@@ -561,37 +551,6 @@ function Estimate({ lang }: { lang: Lang }) {
         </div>
       </div>
     </section>
-  );
-}
-
-function RateBar({
-  label,
-  low,
-  high,
-  scale,
-  tone,
-}: {
-  label: string;
-  low: number;
-  high: number;
-  scale: number;
-  tone: "ours" | "market";
-}) {
-  const left = (low / scale) * 100;
-  const width = Math.max(((high - low) / scale) * 100, 4);
-  return (
-    <div className="grid grid-cols-[5.5rem_1fr_auto] items-center gap-3">
-      <span className="text-xs font-semibold uppercase tracking-wide text-muted">{label}</span>
-      <span className="relative h-3 rounded-full bg-sand">
-        <span
-          className={`absolute top-0 h-3 rounded-full ${tone === "ours" ? "bg-copper" : "bg-ink"}`}
-          style={{ left: `${left}%`, width: `${width}%` }}
-        />
-      </span>
-      <span className="w-14 text-right text-sm font-semibold tabular-nums">
-        {low}–{high}
-      </span>
-    </div>
   );
 }
 
