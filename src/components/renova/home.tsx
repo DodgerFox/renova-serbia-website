@@ -141,16 +141,16 @@ export function HomePage({ lang }: { lang: Lang }) {
                 {copy.ctaVisit}
               </button>
             </div>
-            <dl className="mt-10 grid grid-cols-3 gap-4 border-t border-line pt-6">
-              {copy.stats.map(([k, v]) => (
-                <div key={k}>
-                  <dt className="font-display text-lg font-bold leading-tight sm:text-2xl">{k}</dt>
-                  <dd className="mt-1 text-sm leading-snug text-muted">{v}</dd>
-                </div>
-              ))}
-            </dl>
           </div>
           <WorkSlider lang={lang} />
+          <dl className="grid grid-cols-3 gap-4 border-t border-line pt-6 lg:col-span-12">
+            {copy.stats.map(([k, v]) => (
+              <div key={k}>
+                <dt className="font-display text-xl font-bold leading-tight sm:text-2xl">{k}</dt>
+                <dd className="mt-1 max-w-xs text-sm leading-snug text-muted">{v}</dd>
+              </div>
+            ))}
+          </dl>
         </section>
 
         <section id="services" className="border-y border-line bg-cream">

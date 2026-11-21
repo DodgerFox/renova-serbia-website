@@ -198,7 +198,7 @@ export const ui = {
     ctaEstimate: "Посчитать за м²",
     ctaVisit: "Вызвать на замер",
     stats: [
-      ["за м²", "цена на каждый вид работ"],
+      ["Смета за м²", "цена на каждый вид работ"],
       ["50% / 50%", "предоплата/постоплата по этапам"],
       ["Адекватные цены", "Мы следим за рынком и держим ценник ниже"],
     ],
@@ -265,7 +265,7 @@ export const ui = {
     ctaEstimate: "Price per m²",
     ctaVisit: "Book a measure",
     stats: [
-      ["per m²", "a rate for every trade"],
+      ["Quote per m²", "a rate for every trade"],
       ["50% / 50%", "prepay / balance by stage"],
       ["Fair prices", "We watch the market and stay under it"],
     ],
@@ -332,7 +332,7 @@ export const ui = {
     ctaEstimate: "Cena po m²",
     ctaVisit: "Zakaži merenje",
     stats: [
-      ["po m²", "cena za svaku vrstu radova"],
+      ["Predračun po m²", "cena za svaku vrstu radova"],
       ["50% / 50%", "avans / ostatak po fazama"],
       ["Poštene cene", "Pratimo tržište i držimo cenu ispod"],
     ],
