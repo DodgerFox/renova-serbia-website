@@ -33,9 +33,24 @@ const langTo = { ru: "/", en: "/en", sr: "/sr" } as const;
 export function HomePage({ lang }: { lang: Lang }) {
   const [open, setOpen] = useState(false);
   const [quoteOpen, setQuoteOpen] = useState(false);
+  const [savedQuote, setSavedQuote] = useState<string | null>(null);
+  const [notice, setNotice] = useState(false);
   const [contactMessage, setContactMessage] = useState<string | null>(null);
   const copy = ui[lang];
   const openContact = (message = "") => setContactMessage(message);
+
+  function lockQuote(text: string) {
+    setSavedQuote(text);
+    setNotice(true);
+    setQuoteOpen(false);
+    window.setTimeout(() => document.getElementById("request")?.scrollIntoView({ behavior: "smooth", block: "start" }), 40);
+  }
+
+  useEffect(() => {
+    if (!notice) return;
+    const id = window.setTimeout(() => setNotice(false), 7000);
+    return () => window.clearTimeout(id);
+  }, [notice]);
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -173,7 +188,7 @@ export function HomePage({ lang }: { lang: Lang }) {
           </ul>
         </section>
 
-        <Estimate lang={lang} onOpenQuote={() => setQuoteOpen(true)} />
+        <Estimate lang={lang} onOpenQuote={() => setQuoteOpen(true)} onLock={lockQuote} />
 
         <section id="work" className="bg-ink text-cream">
           <div className="mx-auto max-w-6xl px-5 py-16">
@@ -210,7 +225,7 @@ export function HomePage({ lang }: { lang: Lang }) {
           </div>
         </section>
 
-        <Request lang={lang} />
+        <Request lang={lang} quote={savedQuote} />
       </main>
 
       <footer className="border-t border-line">
@@ -245,7 +260,16 @@ export function HomePage({ lang }: { lang: Lang }) {
       {contactMessage !== null ? (
         <ContactModal lang={lang} message={contactMessage} onClose={() => setContactMessage(null)} />
       ) : null}
-      {quoteOpen ? <QuoteModal lang={lang} onClose={() => setQuoteOpen(false)} /> : null}
+      {quoteOpen ? <QuoteModal lang={lang} onClose={() => setQuoteOpen(false)} onLock={lockQuote} /> : null}
+      {notice ? (
+        <div
+          role="status"
+          className="fixed bottom-24 right-4 z-50 w-[min(20rem,calc(100%-2rem))] rounded-2xl bg-ink p-4 text-cream shadow-xl sm:bottom-6"
+        >
+          <p className="font-display text-lg font-bold">{copy.fixedTitle}</p>
+          <p className="mt-1 text-sm leading-relaxed text-sand">{copy.fixedText}</p>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -528,7 +552,7 @@ function WorkSlider({ lang }: { lang: Lang }) {
   );
 }
 
-function Estimate({ lang, onOpenQuote }: { lang: Lang; onOpenQuote: () => void }) {
+function Estimate({ lang, onOpenQuote, onLock }: { lang: Lang; onOpenQuote: () => void; onLock: (quote: string) => void }) {
   const copy = ui[lang];
   const [kind, setKind] = useState<JobKind>("turnkey");
   const [area, setArea] = useState(55);
@@ -624,12 +648,22 @@ function Estimate({ lang, onOpenQuote }: { lang: Lang; onOpenQuote: () => void }
                 {copy.total}: {result.low.toLocaleString(locale)}–{result.high.toLocaleString(locale)} €
               </p>
             </div>
-            <a
-              href="#request"
+            <button
+              type="button"
+              onClick={() => {
+                const job = jobKinds.find((item) => item.id === kind)!;
+                onLock(
+                  [
+                    `${job.label[lang]}, ${area} ${copy.quoteMetres}`,
+                    `${result.perLow}–${result.perHigh} ${copy.per}`,
+                    `${copy.total}: ${result.low.toLocaleString(locale)}–${result.high.toLocaleString(locale)} €`,
+                  ].join("\n"),
+                );
+              }}
               className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-copper px-5 font-semibold text-cream"
             >
               {copy.book}
-            </a>
+            </button>
           </div>
         </div>
       </div>
@@ -637,7 +671,7 @@ function Estimate({ lang, onOpenQuote }: { lang: Lang; onOpenQuote: () => void }
   );
 }
 
-function QuoteModal({ lang, onClose }: { lang: Lang; onClose: () => void }) {
+function QuoteModal({ lang, onClose, onLock }: { lang: Lang; onClose: () => void; onLock: (quote: string) => void }) {
   const copy = ui[lang];
   const [picked, setPicked] = useState<Record<string, string>>({});
   const locale = lang === "en" ? "en-GB" : "ru-RU";
@@ -733,20 +767,30 @@ function QuoteModal({ lang, onClose }: { lang: Lang; onClose: () => void }) {
             {count > 0 ? `${Math.round(low).toLocaleString(locale)}–${Math.round(high).toLocaleString(locale)} €` : "—"}
           </p>
           {count === 0 ? <p className="mt-1 text-sm text-muted">{copy.quoteEmpty}</p> : null}
-          <a
-            href="#request"
-            onClick={onClose}
-            className="mt-4 inline-flex h-12 w-full items-center justify-center rounded-full bg-copper font-semibold text-cream"
+          <button
+            type="button"
+            disabled={count === 0}
+            onClick={() => {
+              const lines = services.flatMap((item) => {
+                if (!(item.n in picked)) return [];
+                const area = Number((picked[item.n] ?? "").replace(",", "."));
+                if (!Number.isFinite(area) || area <= 0) return [];
+                return [`${item.title[lang]}: ${area} ${copy.quoteMetres} · ${Math.round(item.low * area)}–${Math.round(item.high * area)} €`];
+              });
+              lines.push(`${copy.total}: ${Math.round(low).toLocaleString(locale)}–${Math.round(high).toLocaleString(locale)} €`);
+              onLock(lines.join("\n"));
+            }}
+            className="mt-4 inline-flex h-12 w-full items-center justify-center rounded-full bg-copper font-semibold text-cream disabled:opacity-50"
           >
             {copy.book}
-          </a>
+          </button>
         </div>
       </div>
     </div>
   );
 }
 
-function Request({ lang }: { lang: Lang }) {
+function Request({ lang, quote }: { lang: Lang; quote: string | null }) {
   const copy = ui[lang];
   const [channel, setChannel] = useState<Channel>("phone");
   const [dial, setDial] = useState("381");
@@ -775,7 +819,7 @@ function Request({ lang }: { lang: Lang }) {
     setInvalid(false);
     setState("sending");
     try {
-      const result = await sendLead({ data: { channel, contact: value, comment } });
+      const result = await sendLead({ data: { channel, contact: value, comment, quote: quote ?? "" } });
       setState(result.ok ? "sent" : "error");
     } catch {
       setState("error");
@@ -872,6 +916,7 @@ function Request({ lang }: { lang: Lang }) {
               placeholder={copy.notePh}
             />
           </label>
+          {quote ? <p className="text-sm text-muted">{copy.quoteAttached}</p> : null}
           <button
             type="submit"
             disabled={state === "sending"}

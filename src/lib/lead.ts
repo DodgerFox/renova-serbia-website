@@ -19,12 +19,13 @@ function readLead(input: unknown) {
   if (!channels.includes(channel as Channel)) throw new Error("bad");
   const contact = typeof raw.contact === "string" ? raw.contact.trim() : "";
   const comment = typeof raw.comment === "string" ? raw.comment.replace(/\s+/g, " ").trim().slice(0, 1000) : "";
+  const quote = typeof raw.quote === "string" ? raw.quote.replace(/\r/g, "").trim().slice(0, 1500) : "";
   if (channel === "telegram") {
     if (!/^@[a-zA-Z][a-zA-Z0-9_]{4,31}$/.test(contact)) throw new Error("bad");
   } else if (!contact.startsWith("+") || contact.replace(/\D/g, "").length < 8 || contact.replace(/\D/g, "").length > 15) {
     throw new Error("bad");
   }
-  return { channel: channel as Channel, contact, comment };
+  return { channel: channel as Channel, contact, comment, quote };
 }
 
 export const sendLead = createServerFn({ method: "POST" })
@@ -42,6 +43,7 @@ export const sendLead = createServerFn({ method: "POST" })
       "Заявка RENOVA",
       `${channelLabel[data.channel]}: ${data.contact}`,
       data.comment ? `Комментарий: ${data.comment}` : "",
+      data.quote ? `Смета:\n${data.quote}` : "",
     ]
       .filter(Boolean)
       .join("\n");
