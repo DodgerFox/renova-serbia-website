@@ -114,7 +114,7 @@ export const openings: { title: L; text: L }[] = [
   { title: t("Электрик", "Electrician", "Električar"), text: t("Новая разводка, щиток и точки по схеме.", "New wiring, board and points to plan.", "Nova instalacija, tabla i tačke po šemi.") },
   { title: t("Сантехник", "Plumber", "Vodoinstalater"), text: t("Скрытая разводка и перенос стояков.", "Concealed pipes and moving risers.", "Skrivena instalacija i pomeranje vertikala.") },
   { title: t("Гипсокартон", "Drywall", "Gips-karton"), text: t("Перегородки, ниши и короба.", "Partitions, niches and boxing.", "Pregrade, niše i kutije.") },
-  { title: t("Подсобный", "Labourer", "Pomoćni radnik"), text: t("Демонтаж, поднос материала и уборка объекта.", "Strip-out, moving materials and keeping the site clear.", "Rušenje, prenos materijala i čišćenje objekta.") },
+  { title: t("Универсал", "All-round finisher", "Univerzalni majstor"), text: t("Демонтаж, штукатурка, шпаклёвка, покраска и гипсокартон. Закрывает смежные этапы.", "Strip-out, plaster, skim, paint and drywall. Covers the neighbouring stages.", "Rušenje, malter, glet, krečenje i gips-karton. Zatvara susedne faze.") },
 ];
 
 export const crewConditions: L[] = [
