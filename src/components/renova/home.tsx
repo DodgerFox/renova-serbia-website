@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Check, ChevronDown, Mail, Menu, MessageCircle, Phone, Ruler, Send, X } from "lucide-react";
+import { ArrowUpRight, Check, ChevronDown, ChevronLeft, ChevronRight, Mail, Menu, MessageCircle, Phone, Ruler, Send, X } from "lucide-react";
 import {
   crewConditions,
   contactCopy,
@@ -19,6 +19,7 @@ import {
   markets,
   openings,
   services,
+  showcases,
   steps,
   ui,
   type JobKind,
@@ -125,17 +126,7 @@ export function HomePage({ lang }: { lang: Lang }) {
               ))}
             </dl>
           </div>
-          <div className="relative lg:col-span-6">
-            <img
-              src="/photos/hero-clean.jpg"
-              alt={copy.heroAlt}
-              className="aspect-video w-full rounded-card object-cover"
-            />
-            <div className="absolute bottom-4 left-4 right-4 rounded-2xl bg-ink/90 p-4 text-cream sm:right-auto sm:max-w-xs">
-              <p className="text-xs uppercase tracking-widest text-sand">{copy.onSite}</p>
-              <p className="mt-1 font-display text-lg font-bold">{copy.onSiteTitle}</p>
-            </div>
-          </div>
+          <WorkSlider lang={lang} />
         </section>
 
         <section id="services" className="border-y border-line bg-cream">
@@ -439,6 +430,93 @@ function Contacts() {
         <Mail className="size-4 text-copper" />
         {EMAIL}
       </a>
+    </div>
+  );
+}
+
+function WorkSlider({ lang }: { lang: Lang }) {
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const startX = useRef(0);
+  const count = showcases.length;
+  const slide = showcases[index];
+  const labels = {
+    ru: { prev: "Предыдущий вид работ", next: "Следующий вид работ" },
+    en: { prev: "Previous type of work", next: "Next type of work" },
+    sr: { prev: "Prethodna vrsta radova", next: "Sledeća vrsta radova" },
+  }[lang];
+
+  useEffect(() => {
+    if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = window.setInterval(() => setIndex((i) => (i + 1) % count), 7000);
+    return () => window.clearInterval(id);
+  }, [paused, count]);
+
+  const go = (next: number) => setIndex((next + count) % count);
+
+  return (
+    <div className="lg:col-span-6">
+      <div
+        className="relative"
+        onTouchStart={(e) => {
+          startX.current = e.changedTouches[0].clientX;
+          setPaused(true);
+        }}
+        onTouchEnd={(e) => {
+          const dx = e.changedTouches[0].clientX - startX.current;
+          if (dx > 40) go(index - 1);
+          if (dx < -40) go(index + 1);
+        }}
+      >
+        <img src={slide.src} alt={slide.title[lang]} className="aspect-video w-full rounded-card object-cover" />
+        <div className="absolute bottom-4 left-4 right-4 rounded-2xl bg-ink/90 p-4 text-cream sm:right-auto sm:max-w-xs">
+          <p className="text-xs uppercase tracking-widest text-sand">{slide.kicker[lang]}</p>
+          <p className="mt-1 font-display text-lg font-bold">{slide.title[lang]}</p>
+        </div>
+        <div className="absolute right-3 top-3 flex gap-2">
+          <button
+            type="button"
+            aria-label={labels.prev}
+            onClick={() => {
+              setPaused(true);
+              go(index - 1);
+            }}
+            className="inline-flex size-10 items-center justify-center rounded-full bg-cream/90 text-ink"
+          >
+            <ChevronLeft className="size-4" />
+          </button>
+          <button
+            type="button"
+            aria-label={labels.next}
+            onClick={() => {
+              setPaused(true);
+              go(index + 1);
+            }}
+            className="inline-flex size-10 items-center justify-center rounded-full bg-cream/90 text-ink"
+          >
+            <ChevronRight className="size-4" />
+          </button>
+        </div>
+      </div>
+      <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+        {showcases.map((item, i) => (
+          <button
+            key={item.src}
+            type="button"
+            aria-pressed={i === index}
+            onClick={() => {
+              setPaused(true);
+              setIndex(i);
+            }}
+            className={`h-10 shrink-0 rounded-full px-4 text-sm font-semibold ${
+              i === index ? "bg-ink text-cream" : "border border-line bg-cream"
+            }`}
+          >
+            {item.label[lang]}
+          </button>
+        ))}
+      </div>
+      <p className="mt-3 max-w-md text-sm leading-relaxed text-muted">{slide.text[lang]}</p>
     </div>
   );
 }
