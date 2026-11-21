@@ -12,36 +12,16 @@ type L = Record<Lang, string>;
 const t = (ru: string, en: string, sr: string): L => ({ ru, en, sr });
 
 export const services: { n: string; low: number; high: number; title: L; text: L; detail: L }[] = [
-  { n: "01", low: 13, high: 23, title: t("Демонтаж и перепланировка", "Demolition and layout", "Rušenje i pregradnja"), text: t("Снос перегородок, вывоз мусора, подготовка под новую планировку.", "Taking down partitions, waste removal, ready for a new layout.", "Rušenje pregrada, odvoz šuta, priprema za novu raspodelu."), detail: t("Снимаем перегородки, старую плитку, стяжку и покрытия. Мусор пакуем и вывозим. После этого помещение готово под новую планировку.", "We take down partitions, old tile, screed and finishes, then bag and remove the waste. The room is then ready for a new layout.", "Skidamo pregrade, staru keramiku, košuljicu i obloge. Šut pakujemo i odvozimo. Posle toga prostor je spreman za novu raspodelu.") },
-  { n: "02", low: 26, high: 46, title: t("Электрика", "Electrical", "Elektrika"), text: t("Новая разводка, щиток, точки света и розетки по схеме.", "New wiring, board, lights and sockets to plan.", "Nova instalacija, tabla, rasveta i utičnice po šemi."), detail: t("Новая разводка, щиток и автоматы, точки света и розетки по схеме. Штробы заделываем. Кабель и фурнитура считаются отдельно.", "New wiring, a board and breakers, lights and sockets to plan. We close the chases. Cable and fittings are priced apart.", "Nova instalacija, tabla i osigurači, rasveta i utičnice po šemi. Šliceve zatvaramo. Kabl i oprema idu odvojeno.") },
-  { n: "03", low: 110, high: 170, title: t("Сантехника", "Plumbing", "Vodovod"), text: t("Перенос стояков, скрытая разводка, подключение сантехники. Цена за м² мокрой зоны.", "Moving risers, concealed pipes, fitting sanitaryware. Price per m² of wet area.", "Pomeranje vertikala, skrivena instalacija, priključak sanitarija. Cena po m² mokre zone."), detail: t("Перенос стояков, скрытая разводка воды и канализации, выводы под смесители, инсталляцию и технику. Цена за м² мокрой зоны, не всей квартиры. Трубы и приборы отдельно.", "Moving risers, concealed water and waste pipes, outlets for taps, a frame and appliances. The rate is per m² of wet area, not the whole flat. Pipes and fittings are separate.", "Pomeranje vertikala, skrivena voda i kanalizacija, izvodi za slavine, ugradni vodokotlić i aparate. Cena je po m² mokre zone, ne celog stana. Cevi i oprema odvojeno.") },
-  { n: "04", low: 7, high: 16, title: t("Штукатурка", "Plaster", "Malterisanje"), text: t("Выравнивание стен по маякам, углы и откосы.", "Walls on guides, corners and window reveals.", "Ravnanje zidova po vodilicama, uglovi i špaletne."), detail: t("Выравниваем стены по маякам, выводим углы и откосы. Готовая плоскость идёт под шпаклёвку или плитку. Смесь считается отдельно.", "Walls go on guides, with corners and window reveals. The plane is ready for skim or tile. The mix is priced apart.", "Zidove ravnamo po vodilicama, izvodimo uglove i špaletne. Ravan zid ide pod glet ili pločice. Smeša se računa odvojeno.") },
-  { n: "05", low: 10, high: 18, title: t("Стяжка пола", "Floor screed", "Košuljica"), text: t("Стяжка под плитку, ламинат и тёплый пол.", "Screed for tile, laminate and underfloor heating.", "Košuljica za pločice, laminat i podno grejanje."), detail: t("Стяжка под плитку, ламинат и тёплый пол, с уровнем по маякам. Смесь и нагревательный контур в материалы не входят.", "A screed for tile, laminate and underfloor heating, levelled on guides. The mix and the heating loop are materials, not this rate.", "Košuljica za pločice, laminat i podno grejanje, po vodilicama. Smeša i grejni krug nisu u ovoj ceni.") },
-  { n: "06", low: 18, high: 34, title: t("Гипсокартон", "Drywall", "Gips-karton"), text: t("Перегородки, ниши, короба и потолочные конструкции.", "Partitions, niches, boxing and ceiling builds.", "Pregrade, niše, kutije i plafonske konstrukcije."), detail: t("Перегородки, ниши, короба и зашивка инсталляции. Каркас собираем по размерам. Лист, профиль и утеплитель идут отдельно.", "Partitions, niches, boxing and lining around a cistern frame. The frame is built to size. Board, profile and insulation are separate.", "Pregrade, niše, kutije i obloga ugradnog vodokotlića. Konstrukciju radimo po meri. Tabla, profil i izolacija idu odvojeno.") },
-  { n: "07", low: 7, high: 12, title: t("Шпаклёвка и покраска", "Skim and paint", "Gletovanje i krečenje"), text: t("Чистовая подготовка и покраска жилых комнат.", "Finish prep and paint for living rooms.", "Fino gletovanje i krečenje stambenih soba."), detail: t("Шпаклёвка, шлифовка и покраска стен и потолка в жилых комнатах. Грунт и краска отдельно. Считается за м² стены и потолка, не пола.", "Skim, sanding and paint on walls and ceilings in living rooms. Primer and paint are separate. The rate is per m² of wall and ceiling, not floor.", "Gletovanje, brušenje i krečenje zidova i plafona u sobama. Podloga i boja odvojeno. Računa se po m² zida i plafona, ne poda.") },
-  { n: "08", low: 33, high: 52, title: t("Плитка и ламинат", "Tile and laminate", "Pločice i laminat"), text: t("Крупный формат, затирка, подрезка, укладка пола.", "Large format, grout, cuts and floor laying.", "Veliki format, fugovanje, sečenje, postavljanje poda."), detail: t("Укладка крупного формата на пол и стены, подрезка, затирка, укладка ламината. Плитка, ламинат и затирка покупаются отдельно.", "Large-format tile on floors and walls, cuts, grout, and laminate laying. Tile, laminate and grout are bought separately.", "Postavljanje velikog formata na pod i zidove, sečenje, fugovanje i laminat. Pločice, laminat i fuga kupuju se odvojeno.") },
-  { n: "09", low: 26, high: 52, title: t("Двери и окна", "Doors and windows", "Vrata i prozori"), text: t("Установка межкомнатных дверей и подоконников. Цена за м² проёма.", "Fitting interior doors and sills. Price per m² of opening.", "Ugradnja sobnih vrata i klupica. Cena po m² otvora."), detail: t("Установка межкомнатных дверей, наличников и подоконников, подгонка зазоров. Цена за м² проёма. Полотно и фурнитура отдельно.", "Fitting interior doors, architraves and sills, and setting the gaps. The rate is per m² of opening. The leaf and the hardware are separate.", "Ugradnja sobnih vrata, lajsni i klupica, nameštanje zazora. Cena je po m² otvora. Krilo i okov odvojeno.") },
-  { n: "10", low: 16, high: 29, title: t("Потолки", "Ceilings", "Plafoni"), text: t("Натяжные и гипсокартонные потолки со светом.", "Stretch and drywall ceilings with lighting.", "Zategnuti i gipsani plafoni sa rasvetom."), detail: t("Гипсокартонный или натяжной потолок, закладные под светильники и обход коробов. Полотно, профиль и свет считаются отдельно.", "A drywall or stretch ceiling, with backing for lights and boxing where needed. The sheet, profile and lights are priced apart.", "Gipsani ili zategnuti plafon, priprema za svetiljke i obilazak kutija. Platno, profil i rasveta idu odvojeno.") },
-];
-
-export type MarketRow = {
-  n: string;
-  low: number | null;
-  high: number | null;
-};
-
-/** Belgrade labour bands, autumn 2026. */
-export const markets: MarketRow[] = [
-  { n: "01", low: 10, high: 18 },
-  { n: "02", low: 20, high: 35 },
-  { n: "03", low: 85, high: 130 },
-  { n: "04", low: 5, high: 12 },
-  { n: "05", low: 8, high: 14 },
-  { n: "06", low: 14, high: 26 },
-  { n: "07", low: 5, high: 9 },
-  { n: "08", low: 25, high: 40 },
-  { n: "09", low: 20, high: 40 },
-  { n: "10", low: 12, high: 22 },
+  { n: "01", low: 10, high: 18, title: t("Демонтаж и перепланировка", "Demolition and layout", "Rušenje i pregradnja"), text: t("Снос перегородок, вывоз мусора, подготовка под новую планировку.", "Taking down partitions, waste removal, ready for a new layout.", "Rušenje pregrada, odvoz šuta, priprema za novu raspodelu."), detail: t("Снимаем перегородки, старую плитку, стяжку и покрытия. Мусор пакуем и вывозим. После этого помещение готово под новую планировку.", "We take down partitions, old tile, screed and finishes, then bag and remove the waste. The room is then ready for a new layout.", "Skidamo pregrade, staru keramiku, košuljicu i obloge. Šut pakujemo i odvozimo. Posle toga prostor je spreman za novu raspodelu.") },
+  { n: "02", low: 20, high: 35, title: t("Электрика", "Electrical", "Elektrika"), text: t("Новая разводка, щиток, точки света и розетки по схеме.", "New wiring, board, lights and sockets to plan.", "Nova instalacija, tabla, rasveta i utičnice po šemi."), detail: t("Новая разводка, щиток и автоматы, точки света и розетки по схеме. Штробы заделываем. Кабель и фурнитура считаются отдельно.", "New wiring, a board and breakers, lights and sockets to plan. We close the chases. Cable and fittings are priced apart.", "Nova instalacija, tabla i osigurači, rasveta i utičnice po šemi. Šliceve zatvaramo. Kabl i oprema idu odvojeno.") },
+  { n: "03", low: 85, high: 130, title: t("Сантехника", "Plumbing", "Vodovod"), text: t("Перенос стояков, скрытая разводка, подключение сантехники. Цена за м² мокрой зоны.", "Moving risers, concealed pipes, fitting sanitaryware. Price per m² of wet area.", "Pomeranje vertikala, skrivena instalacija, priključak sanitarija. Cena po m² mokre zone."), detail: t("Перенос стояков, скрытая разводка воды и канализации, выводы под смесители, инсталляцию и технику. Цена за м² мокрой зоны, не всей квартиры. Трубы и приборы отдельно.", "Moving risers, concealed water and waste pipes, outlets for taps, a frame and appliances. The rate is per m² of wet area, not the whole flat. Pipes and fittings are separate.", "Pomeranje vertikala, skrivena voda i kanalizacija, izvodi za slavine, ugradni vodokotlić i aparate. Cena je po m² mokre zone, ne celog stana. Cevi i oprema odvojeno.") },
+  { n: "04", low: 5, high: 12, title: t("Штукатурка", "Plaster", "Malterisanje"), text: t("Выравнивание стен по маякам, углы и откосы.", "Walls on guides, corners and window reveals.", "Ravnanje zidova po vodilicama, uglovi i špaletne."), detail: t("Выравниваем стены по маякам, выводим углы и откосы. Готовая плоскость идёт под шпаклёвку или плитку. Смесь считается отдельно.", "Walls go on guides, with corners and window reveals. The plane is ready for skim or tile. The mix is priced apart.", "Zidove ravnamo po vodilicama, izvodimo uglove i špaletne. Ravan zid ide pod glet ili pločice. Smeša se računa odvojeno.") },
+  { n: "05", low: 8, high: 14, title: t("Стяжка пола", "Floor screed", "Košuljica"), text: t("Стяжка под плитку, ламинат и тёплый пол.", "Screed for tile, laminate and underfloor heating.", "Košuljica za pločice, laminat i podno grejanje."), detail: t("Стяжка под плитку, ламинат и тёплый пол, с уровнем по маякам. Смесь и нагревательный контур в материалы не входят.", "A screed for tile, laminate and underfloor heating, levelled on guides. The mix and the heating loop are materials, not this rate.", "Košuljica za pločice, laminat i podno grejanje, po vodilicama. Smeša i grejni krug nisu u ovoj ceni.") },
+  { n: "06", low: 14, high: 26, title: t("Гипсокартон", "Drywall", "Gips-karton"), text: t("Перегородки, ниши, короба и потолочные конструкции.", "Partitions, niches, boxing and ceiling builds.", "Pregrade, niše, kutije i plafonske konstrukcije."), detail: t("Перегородки, ниши, короба и зашивка инсталляции. Каркас собираем по размерам. Лист, профиль и утеплитель идут отдельно.", "Partitions, niches, boxing and lining around a cistern frame. The frame is built to size. Board, profile and insulation are separate.", "Pregrade, niše, kutije i obloga ugradnog vodokotlića. Konstrukciju radimo po meri. Tabla, profil i izolacija idu odvojeno.") },
+  { n: "07", low: 5, high: 9, title: t("Шпаклёвка и покраска", "Skim and paint", "Gletovanje i krečenje"), text: t("Чистовая подготовка и покраска жилых комнат.", "Finish prep and paint for living rooms.", "Fino gletovanje i krečenje stambenih soba."), detail: t("Шпаклёвка, шлифовка и покраска стен и потолка в жилых комнатах. Грунт и краска отдельно. Считается за м² стены и потолка, не пола.", "Skim, sanding and paint on walls and ceilings in living rooms. Primer and paint are separate. The rate is per m² of wall and ceiling, not floor.", "Gletovanje, brušenje i krečenje zidova i plafona u sobama. Podloga i boja odvojeno. Računa se po m² zida i plafona, ne poda.") },
+  { n: "08", low: 25, high: 40, title: t("Плитка и ламинат", "Tile and laminate", "Pločice i laminat"), text: t("Крупный формат, затирка, подрезка, укладка пола.", "Large format, grout, cuts and floor laying.", "Veliki format, fugovanje, sečenje, postavljanje poda."), detail: t("Укладка крупного формата на пол и стены, подрезка, затирка, укладка ламината. Плитка, ламинат и затирка покупаются отдельно.", "Large-format tile on floors and walls, cuts, grout, and laminate laying. Tile, laminate and grout are bought separately.", "Postavljanje velikog formata na pod i zidove, sečenje, fugovanje i laminat. Pločice, laminat i fuga kupuju se odvojeno.") },
+  { n: "09", low: 20, high: 40, title: t("Двери и окна", "Doors and windows", "Vrata i prozori"), text: t("Установка межкомнатных дверей и подоконников. Цена за м² проёма.", "Fitting interior doors and sills. Price per m² of opening.", "Ugradnja sobnih vrata i klupica. Cena po m² otvora."), detail: t("Установка межкомнатных дверей, наличников и подоконников, подгонка зазоров. Цена за м² проёма. Полотно и фурнитура отдельно.", "Fitting interior doors, architraves and sills, and setting the gaps. The rate is per m² of opening. The leaf and the hardware are separate.", "Ugradnja sobnih vrata, lajsni i klupica, nameštanje zazora. Cena je po m² otvora. Krilo i okov odvojeno.") },
+  { n: "10", low: 12, high: 22, title: t("Потолки", "Ceilings", "Plafoni"), text: t("Натяжные и гипсокартонные потолки со светом.", "Stretch and drywall ceilings with lighting.", "Zategnuti i gipsani plafoni sa rasvetom."), detail: t("Гипсокартонный или натяжной потолок, закладные под светильники и обход коробов. Полотно, профиль и свет считаются отдельно.", "A drywall or stretch ceiling, with backing for lights and boxing where needed. The sheet, profile and lights are priced apart.", "Gipsani ili zategnuti plafon, priprema za svetiljke i obilazak kutija. Platno, profil i rasveta idu odvojeno.") },
 ];
 
 export const steps: { n: string; title: L; text: L }[] = [
@@ -112,10 +92,10 @@ export const gallery: { src: string; title: L; caption: L }[] = [
 export type JobKind = "cosmetic" | "turnkey" | "bath" | "kitchen";
 
 export const jobKinds: { id: JobKind; low: number; high: number; label: L; hint: L }[] = [
-  { id: "cosmetic", low: 40, high: 72, label: t("Косметика", "Refresh", "Osveženje"), hint: t("Покраска и пол, без переноса инженерии", "Paint and floors, no services moved", "Krečenje i pod, bez pomeranja instalacija") },
-  { id: "turnkey", low: 330, high: 520, label: t("Под ключ", "Turnkey", "Ključ u ruke"), hint: t("Демонтаж, инженерия и чистовая, сумма за м²", "Strip-out, services and finish, per m²", "Rušenje, instalacije i završnica, po m²") },
-  { id: "bath", low: 230, high: 360, label: t("Санузел", "Bathroom", "Kupatilo"), hint: t("Гидроизоляция, плитка, сантехника — за м²", "Tanking, tile, plumbing — per m²", "Hidroizolacija, pločice, vodovod — po m²") },
-  { id: "kitchen", low: 65, high: 120, label: t("Кухня", "Kitchen", "Kuhinja"), hint: t("Фартук, пол, электрика. Мебель не входит", "Splashback, floor, electrics. Furniture excluded", "Keramička traka, pod, elektrika. Nameštaj nije uračunat") },
+  { id: "cosmetic", low: 30, high: 55, label: t("Косметика", "Refresh", "Osveženje"), hint: t("Покраска и пол, без переноса инженерии", "Paint and floors, no services moved", "Krečenje i pod, bez pomeranja instalacija") },
+  { id: "turnkey", low: 250, high: 400, label: t("Под ключ", "Turnkey", "Ključ u ruke"), hint: t("Демонтаж, инженерия и чистовая, сумма за м²", "Strip-out, services and finish, per m²", "Rušenje, instalacije i završnica, po m²") },
+  { id: "bath", low: 180, high: 280, label: t("Санузел", "Bathroom", "Kupatilo"), hint: t("Гидроизоляция, плитка, сантехника — за м²", "Tanking, tile, plumbing — per m²", "Hidroizolacija, pločice, vodovod — po m²") },
+  { id: "kitchen", low: 50, high: 90, label: t("Кухня", "Kitchen", "Kuhinja"), hint: t("Фартук, пол, электрика. Мебель не входит", "Splashback, floor, electrics. Furniture excluded", "Keramička traka, pod, elektrika. Nameštaj nije uračunat") },
 ];
 
 export function estimate(kind: JobKind, area: number) {
@@ -234,8 +214,7 @@ export const ui = {
     ratesTitle: "Смета по работам",
     ratesLead: "Только работа, материалы отдельно. Нажмите строку — что входит в ставку.",
     colWork: "Работа",
-    colOurs: "RENOVA",
-    colMarket: "Рынок",
+    colOurs: "€/м²",
     ratesFoot: "Строки не складываются: у каждой своя поверхность. Пакет ниже — это уже ставка за м² пола.",
     area: "Площадь, м²",
     labour: "Работы, без материалов",
@@ -291,8 +270,7 @@ export const ui = {
     ratesTitle: "Rates by trade",
     ratesLead: "Labour only, materials separate. Tap a row to see what the rate covers.",
     colWork: "Trade",
-    colOurs: "RENOVA",
-    colMarket: "Market",
+    colOurs: "€/m²",
     ratesFoot: "Do not add the rows: each one is a different surface. The package below is a rate per m² of floor.",
     area: "Area, m²",
     labour: "Labour, materials excluded",
@@ -348,8 +326,7 @@ export const ui = {
     ratesTitle: "Predračun po radovima",
     ratesLead: "Samo rad, materijal odvojeno. Dodirnite red — šta ulazi u cenu.",
     colWork: "Rad",
-    colOurs: "RENOVA",
-    colMarket: "Tržište",
+    colOurs: "€/m²",
     ratesFoot: "Redove ne sabirajte: svaki je druga površina. Paket ispod je cena po m² poda.",
     area: "Površina, m²",
     labour: "Radovi, bez materijala",

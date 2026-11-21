@@ -16,7 +16,6 @@ import {
   included,
   jobKinds,
   jobsCopy,
-  markets,
   openings,
   services,
   showcases,
@@ -535,13 +534,11 @@ function Estimate({ lang }: { lang: Lang }) {
         <h2 className="font-display text-4xl font-bold">{copy.ratesTitle}</h2>
         <p className="mt-3 max-w-xl text-muted">{copy.ratesLead}</p>
         <div className="mt-8 overflow-hidden rounded-card border border-line bg-cream">
-          <div className="grid grid-cols-[1fr_4.5rem_4.5rem] gap-2 border-b border-line px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted sm:grid-cols-[1fr_7rem_7rem] sm:px-5">
+          <div className="grid grid-cols-[1fr_5.5rem] gap-2 border-b border-line px-4 py-3 text-xs font-semibold uppercase tracking-wide text-muted sm:px-5">
             <span>{copy.colWork}</span>
             <span className="text-right">{copy.colOurs}</span>
-            <span className="text-right">{copy.colMarket}</span>
           </div>
           {services.map((item) => {
-            const market = markets.find((row) => row.n === item.n);
             const open = openRate === item.n;
             return (
               <div key={item.n} className="border-b border-line last:border-b-0">
@@ -549,7 +546,7 @@ function Estimate({ lang }: { lang: Lang }) {
                   type="button"
                   aria-expanded={open}
                   onClick={() => setOpenRate(open ? null : item.n)}
-                  className={`grid w-full grid-cols-[1fr_4.5rem_4.5rem] items-center gap-2 px-4 py-3 text-left sm:grid-cols-[1fr_7rem_7rem] sm:px-5 ${
+                  className={`grid w-full grid-cols-[1fr_5.5rem] items-center gap-2 px-4 py-3 text-left sm:px-5 ${
                     open ? "bg-paper" : ""
                   }`}
                 >
@@ -559,9 +556,6 @@ function Estimate({ lang }: { lang: Lang }) {
                   </span>
                   <span className="text-right font-display font-bold tabular-nums text-copper">
                     {item.low}–{item.high}
-                  </span>
-                  <span className="text-right font-display font-bold tabular-nums">
-                    {market?.low != null && market.high != null ? `${market.low}–${market.high}` : "—"}
                   </span>
                 </button>
                 {open ? (
