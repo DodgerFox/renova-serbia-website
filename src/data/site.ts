@@ -200,7 +200,7 @@ export const ui = {
     stats: [
       ["за м²", "цена на каждый вид работ"],
       ["50% / 50%", "предоплата/постоплата по этапам"],
-      ["0 €", "замер без оплаты"],
+      ["Адекватные цены", "Мы следим за рынком и держим ценник ниже"],
     ],
     onSite: "На объекте",
     onSiteTitle: "Подготовка под чистовую",
@@ -264,7 +264,7 @@ export const ui = {
     stats: [
       ["per m²", "a rate for every trade"],
       ["50% / 50%", "prepay / balance by stage"],
-      ["€0", "the measure is free"],
+      ["Fair prices", "We watch the market and stay under it"],
     ],
     onSite: "On site",
     onSiteTitle: "Ready for the finish",
@@ -328,7 +328,7 @@ export const ui = {
     stats: [
       ["po m²", "cena za svaku vrstu radova"],
       ["50% / 50%", "avans / ostatak po fazama"],
-      ["0 €", "merenje bez naknade"],
+      ["Poštene cene", "Pratimo tržište i držimo cenu ispod"],
     ],
     onSite: "Na objektu",
     onSiteTitle: "Priprema za završnicu",
