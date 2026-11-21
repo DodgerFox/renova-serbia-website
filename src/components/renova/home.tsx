@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Check, ChevronDown, ChevronLeft, ChevronRight, Mail, Menu, MessageCircle, Phone, Ruler, Send, X } from "lucide-react";
+import { sendLead } from "@/lib/lead";
 import {
   crewConditions,
   contactCopy,
@@ -207,7 +208,7 @@ export function HomePage({ lang }: { lang: Lang }) {
           </div>
         </section>
 
-        <Request lang={lang} onContact={openContact} />
+        <Request lang={lang} />
       </main>
 
       <footer className="border-t border-line">
@@ -626,35 +627,44 @@ function Estimate({ lang }: { lang: Lang }) {
   );
 }
 
-function Request({ lang, onContact }: { lang: Lang; onContact: (message: string) => void }) {
+function Request({ lang }: { lang: Lang }) {
   const copy = ui[lang];
-  const [sent, setSent] = useState(false);
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [city, setCity] = useState<string>(copy.cityOptions[0]);
-  const [task, setTask] = useState<string>(copy.taskOptions[0]);
-  const [note, setNote] = useState("");
+  const [channel, setChannel] = useState<Channel>("phone");
+  const [contact, setContact] = useState("");
+  const [comment, setComment] = useState("");
+  const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [invalid, setInvalid] = useState(false);
+  const phone = channel !== "telegram";
 
-  useEffect(() => {
-    setCity(copy.cityOptions[0]);
-    setTask(copy.taskOptions[0]);
-  }, [copy.cityOptions, copy.taskOptions]);
-
-  function submit(e: FormEvent) {
-    e.preventDefault();
-    const text = [
-      copy.requestTag,
-      `${copy.name}: ${name}`,
-      `${copy.phone}: ${phone}`,
-      `${copy.city}: ${city}`,
-      `${copy.task}: ${task}`,
-      note ? `${copy.note}: ${note}` : "",
-    ]
-      .filter(Boolean)
-      .join("\n");
-    setSent(true);
-    onContact(text);
+  function pick(next: Channel) {
+    setChannel(next);
+    setContact("");
+    setInvalid(false);
+    setState("idle");
   }
+
+  async function submit(e: FormEvent) {
+    e.preventDefault();
+    if (!validContact(channel, contact)) {
+      setInvalid(true);
+      return;
+    }
+    setInvalid(false);
+    setState("sending");
+    try {
+      const result = await sendLead({ data: { channel, contact, comment } });
+      setState(result.ok ? "sent" : "error");
+    } catch {
+      setState("error");
+    }
+  }
+
+  const channels: { id: Channel; label: string }[] = [
+    { id: "phone", label: copy.chPhone },
+    { id: "telegram", label: copy.chTelegram },
+    { id: "viber", label: copy.chViber },
+    { id: "whatsapp", label: copy.chWhatsapp },
+  ];
 
   return (
     <section id="request" className="border-t border-line bg-cream">
@@ -667,75 +677,93 @@ function Request({ lang, onContact }: { lang: Lang; onContact: (message: string)
           </div>
         </div>
         <form onSubmit={submit} className="grid gap-3">
-          <Field label={copy.name} value={name} onChange={setName} required />
-          <Field label={copy.phone} value={phone} onChange={setPhone} required type="tel" />
-          <label className="grid gap-1 text-sm font-semibold">
-            {copy.city}
-            <select
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              className="h-12 rounded-2xl border border-line bg-paper px-4 font-medium"
-            >
-              {copy.cityOptions.map((option) => (
-                <option key={option}>{option}</option>
+          <div className="grid gap-2">
+            <span className="text-sm font-semibold">{copy.contact}</span>
+            <div className="flex flex-wrap gap-2">
+              {channels.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  aria-pressed={channel === item.id}
+                  onClick={() => pick(item.id)}
+                  className={`h-10 rounded-full px-4 text-sm font-semibold ${
+                    channel === item.id ? "bg-ink text-cream" : "border border-line bg-paper"
+                  }`}
+                >
+                  {item.label}
+                </button>
               ))}
-            </select>
-          </label>
-          <label className="grid gap-1 text-sm font-semibold">
-            {copy.task}
-            <select
-              value={task}
-              onChange={(e) => setTask(e.target.value)}
+            </div>
+            <input
+              required
+              inputMode={phone ? "tel" : "text"}
+              autoComplete={phone ? "tel" : "off"}
+              autoCapitalize="off"
+              spellCheck={false}
+              value={contact}
+              placeholder={phone ? copy.phPhone : copy.phTelegram}
+              onChange={(e) => {
+                setContact(phone ? formatPhone(e.target.value) : formatTelegram(e.target.value));
+                setInvalid(false);
+                setState("idle");
+              }}
               className="h-12 rounded-2xl border border-line bg-paper px-4 font-medium"
-            >
-              {copy.taskOptions.map((option) => (
-                <option key={option}>{option}</option>
-              ))}
-            </select>
-          </label>
+            />
+            {invalid ? <p className="text-sm text-copper">{copy.badContact}</p> : null}
+          </div>
           <label className="grid gap-1 text-sm font-semibold">
             {copy.note}
             <textarea
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
               rows={3}
+              maxLength={1000}
               className="rounded-2xl border border-line bg-paper px-4 py-3 font-medium"
               placeholder={copy.notePh}
             />
           </label>
-          <button type="submit" className="h-12 rounded-full bg-ink font-semibold text-cream">
+          <button
+            type="submit"
+            disabled={state === "sending"}
+            className="h-12 rounded-full bg-ink font-semibold text-cream disabled:opacity-60"
+          >
             {copy.send}
           </button>
-          {sent ? <p className="text-sm text-muted">{copy.sent}</p> : null}
+          {state === "sent" ? <p className="text-sm text-muted">{copy.sent}</p> : null}
+          {state === "error" ? <p className="text-sm text-copper">{copy.sendError}</p> : null}
         </form>
       </div>
     </section>
   );
 }
 
-function Field({
-  label,
-  value,
-  onChange,
-  type = "text",
-  required,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  type?: string;
-  required?: boolean;
-}) {
-  return (
-    <label className="grid gap-1 text-sm font-semibold">
-      {label}
-      <input
-        required={required}
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="h-12 rounded-2xl border border-line bg-paper px-4 font-medium"
-      />
-    </label>
-  );
+type Channel = "phone" | "telegram" | "viber" | "whatsapp";
+
+function formatPhone(value: string) {
+  let digits = value.replace(/\D/g, "");
+  if (digits.startsWith("00")) digits = digits.slice(2);
+  if (digits.startsWith("0")) digits = `381${digits.slice(1)}`;
+  if (digits.length > 0 && !digits.startsWith("381") && digits.length <= 9) digits = `381${digits}`;
+  digits = digits.slice(0, 15);
+  if (!digits) return "";
+  if (digits.startsWith("381")) {
+    const national = digits.slice(3, 12);
+    const parts = [national.slice(0, 2), national.slice(2, 5), national.slice(5, 9)].filter(Boolean);
+    return parts.length ? `+381 ${parts.join(" ")}` : "+381 ";
+  }
+  return `+${digits}`;
+}
+
+function formatTelegram(value: string) {
+  const body = value
+    .replace(/https?:\/\/t\.me\//i, "")
+    .replace(/[^a-zA-Z0-9_]/g, "")
+    .slice(0, 32);
+  return body ? `@${body}` : "";
+}
+
+function validContact(channel: Channel, contact: string) {
+  if (channel === "telegram") return /^@[a-zA-Z][a-zA-Z0-9_]{4,31}$/.test(contact);
+  const digits = contact.replace(/\D/g, "");
+  return digits.length >= 11 && digits.length <= 15;
 }
