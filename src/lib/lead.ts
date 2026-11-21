@@ -21,7 +21,7 @@ function readLead(input: unknown) {
   const comment = typeof raw.comment === "string" ? raw.comment.replace(/\s+/g, " ").trim().slice(0, 1000) : "";
   if (channel === "telegram") {
     if (!/^@[a-zA-Z][a-zA-Z0-9_]{4,31}$/.test(contact)) throw new Error("bad");
-  } else if (!/^\+\d[\d\s]{9,20}$/.test(contact) || contact.replace(/\D/g, "").length < 11) {
+  } else if (!contact.startsWith("+") || contact.replace(/\D/g, "").length < 8 || contact.replace(/\D/g, "").length > 15) {
     throw new Error("bad");
   }
   return { channel: channel as Channel, contact, comment };

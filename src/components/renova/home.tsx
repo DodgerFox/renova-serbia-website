@@ -32,6 +32,7 @@ const langTo = { ru: "/", en: "/en", sr: "/sr" } as const;
 
 export function HomePage({ lang }: { lang: Lang }) {
   const [open, setOpen] = useState(false);
+  const [quoteOpen, setQuoteOpen] = useState(false);
   const [contactMessage, setContactMessage] = useState<string | null>(null);
   const copy = ui[lang];
   const openContact = (message = "") => setContactMessage(message);
@@ -102,13 +103,14 @@ export function HomePage({ lang }: { lang: Lang }) {
             </h1>
             <p className="mt-6 max-w-md text-lg leading-relaxed text-muted">{copy.lead}</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href="#estimate"
+              <button
+                type="button"
+                onClick={() => setQuoteOpen(true)}
                 className="inline-flex h-12 items-center gap-2 rounded-full bg-copper px-5 font-semibold text-cream"
               >
                 {copy.ctaEstimate}
                 <ArrowUpRight className="size-4" />
-              </a>
+              </button>
               <button
                 type="button"
                 onClick={() => openContact()}
@@ -171,7 +173,7 @@ export function HomePage({ lang }: { lang: Lang }) {
           </ul>
         </section>
 
-        <Estimate lang={lang} />
+        <Estimate lang={lang} onOpenQuote={() => setQuoteOpen(true)} />
 
         <section id="work" className="bg-ink text-cream">
           <div className="mx-auto max-w-6xl px-5 py-16">
@@ -223,9 +225,13 @@ export function HomePage({ lang }: { lang: Lang }) {
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-paper/95 p-3 backdrop-blur sm:hidden">
         <div className="grid grid-cols-2 gap-2">
-          <a href="#estimate" className="grid h-12 place-items-center rounded-full border border-ink text-sm font-semibold">
+          <button
+            type="button"
+            onClick={() => setQuoteOpen(true)}
+            className="grid h-12 place-items-center rounded-full border border-ink text-sm font-semibold"
+          >
             {copy.mobileEstimate}
-          </a>
+          </button>
           <button
             type="button"
             onClick={() => openContact()}
@@ -239,6 +245,7 @@ export function HomePage({ lang }: { lang: Lang }) {
       {contactMessage !== null ? (
         <ContactModal lang={lang} message={contactMessage} onClose={() => setContactMessage(null)} />
       ) : null}
+      {quoteOpen ? <QuoteModal lang={lang} onClose={() => setQuoteOpen(false)} /> : null}
     </div>
   );
 }
@@ -521,7 +528,7 @@ function WorkSlider({ lang }: { lang: Lang }) {
   );
 }
 
-function Estimate({ lang }: { lang: Lang }) {
+function Estimate({ lang, onOpenQuote }: { lang: Lang; onOpenQuote: () => void }) {
   const copy = ui[lang];
   const [kind, setKind] = useState<JobKind>("turnkey");
   const [area, setArea] = useState(55);
@@ -588,6 +595,9 @@ function Estimate({ lang }: { lang: Lang }) {
               ))}
             </div>
             <p className="mt-3 text-sm text-muted">{jobKinds.find((j) => j.id === kind)?.hint[lang]}</p>
+            <button type="button" onClick={onOpenQuote} className="mt-4 text-sm font-semibold text-copper">
+              {copy.quoteOpen}
+            </button>
             <label className="mt-8 block text-sm font-semibold" htmlFor="area">
               {copy.area}: <span className="tabular-nums">{area}</span>
             </label>
@@ -627,9 +637,120 @@ function Estimate({ lang }: { lang: Lang }) {
   );
 }
 
+function QuoteModal({ lang, onClose }: { lang: Lang; onClose: () => void }) {
+  const copy = ui[lang];
+  const [picked, setPicked] = useState<Record<string, string>>({});
+  const locale = lang === "en" ? "en-GB" : "ru-RU";
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = previous;
+    };
+  }, [onClose]);
+
+  let low = 0;
+  let high = 0;
+  let count = 0;
+  for (const item of services) {
+    if (!(item.n in picked)) continue;
+    const area = Number((picked[item.n] ?? "").replace(",", "."));
+    if (!Number.isFinite(area) || area <= 0) continue;
+    count += 1;
+    low += item.low * area;
+    high += item.high * area;
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/50 p-3 sm:items-center" onClick={onClose}>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="quote-title"
+        className="flex max-h-[92dvh] w-full max-w-lg flex-col rounded-card bg-paper shadow-xl"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-4 p-5 pb-3">
+          <div>
+            <h2 id="quote-title" className="font-display text-2xl font-bold">
+              {copy.quoteTitle}
+            </h2>
+            <p className="mt-2 text-sm text-muted">{copy.quoteLead}</p>
+          </div>
+          <button type="button" onClick={onClose} aria-label={copy.close} className="grid size-10 shrink-0 place-items-center rounded-full border border-line">
+            <X className="size-4" />
+          </button>
+        </div>
+        <ul className="min-h-0 flex-1 overflow-y-auto px-5">
+          {services.map((item) => {
+            const on = item.n in picked;
+            return (
+              <li key={item.n} className="grid grid-cols-[1.25rem_1fr_5.25rem] items-center gap-3 border-t border-line py-3">
+                <input
+                  type="checkbox"
+                  className="size-5 accent-copper"
+                  checked={on}
+                  aria-label={item.title[lang]}
+                  onChange={(event) => {
+                    setPicked((prev) => {
+                      const next = { ...prev };
+                      if (event.target.checked) next[item.n] = prev[item.n] ?? "";
+                      else delete next[item.n];
+                      return next;
+                    });
+                  }}
+                />
+                <span>
+                  <span className="font-semibold">{item.title[lang]}</span>
+                  <span className="mt-0.5 block text-sm text-muted">
+                    {item.low}–{item.high} {copy.per}
+                  </span>
+                </span>
+                <input
+                  inputMode="decimal"
+                  disabled={!on}
+                  value={picked[item.n] ?? ""}
+                  placeholder="0"
+                  aria-label={`${item.title[lang]}, ${copy.quoteMetres}`}
+                  onChange={(event) => {
+                    const next = event.target.value.replace(/[^\d.,]/g, "").slice(0, 6);
+                    setPicked((prev) => ({ ...prev, [item.n]: next }));
+                  }}
+                  className="h-11 rounded-xl border border-line bg-cream px-2 text-right font-medium tabular-nums disabled:opacity-40"
+                />
+              </li>
+            );
+          })}
+        </ul>
+        <div className="border-t border-line p-5">
+          <p className="font-display text-3xl font-extrabold tabular-nums">
+            {count > 0 ? `${Math.round(low).toLocaleString(locale)}–${Math.round(high).toLocaleString(locale)} €` : "—"}
+          </p>
+          {count === 0 ? <p className="mt-1 text-sm text-muted">{copy.quoteEmpty}</p> : null}
+          <a
+            href="#request"
+            onClick={onClose}
+            className="mt-4 inline-flex h-12 w-full items-center justify-center rounded-full bg-copper font-semibold text-cream"
+          >
+            {copy.book}
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Request({ lang }: { lang: Lang }) {
   const copy = ui[lang];
   const [channel, setChannel] = useState<Channel>("phone");
+  const [dial, setDial] = useState("381");
+  const [national, setNational] = useState("");
   const [contact, setContact] = useState("");
   const [comment, setComment] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
@@ -639,20 +760,22 @@ function Request({ lang }: { lang: Lang }) {
   function pick(next: Channel) {
     setChannel(next);
     setContact("");
+    setNational("");
     setInvalid(false);
     setState("idle");
   }
 
   async function submit(e: FormEvent) {
     e.preventDefault();
-    if (!validContact(channel, contact)) {
+    const value = channel === "telegram" ? contact : fullPhone(dial, national);
+    if (!validContact(channel, value, dial, national)) {
       setInvalid(true);
       return;
     }
     setInvalid(false);
     setState("sending");
     try {
-      const result = await sendLead({ data: { channel, contact, comment } });
+      const result = await sendLead({ data: { channel, contact: value, comment } });
       setState(result.ok ? "sent" : "error");
     } catch {
       setState("error");
@@ -694,21 +817,48 @@ function Request({ lang }: { lang: Lang }) {
                 </button>
               ))}
             </div>
-            <input
-              required
-              inputMode={phone ? "tel" : "text"}
-              autoComplete={phone ? "tel" : "off"}
-              autoCapitalize="off"
-              spellCheck={false}
-              value={contact}
-              placeholder={phone ? copy.phPhone : copy.phTelegram}
-              onChange={(e) => {
-                setContact(phone ? formatPhone(e.target.value) : formatTelegram(e.target.value));
-                setInvalid(false);
-                setState("idle");
-              }}
-              className="h-12 rounded-2xl border border-line bg-paper px-4 font-medium"
-            />
+            <div className="flex gap-2">
+              {phone ? (
+                <select
+                  aria-label={lang === "en" ? "Country code" : lang === "sr" ? "Pozivni broj" : "Код страны"}
+                  value={dial}
+                  onChange={(e) => {
+                    setDial(e.target.value);
+                    setNational("");
+                    setInvalid(false);
+                    setState("idle");
+                  }}
+                  className="h-12 w-[9.25rem] shrink-0 rounded-2xl border border-line bg-paper px-2 font-medium"
+                >
+                  {DIALS.map((item) => (
+                    <option key={item.iso} value={item.dial}>
+                      {item.name[lang]} +{item.dial}
+                    </option>
+                  ))}
+                </select>
+              ) : null}
+              <input
+                required
+                inputMode={phone ? "tel" : "text"}
+                autoComplete={phone ? "tel" : "off"}
+                autoCapitalize="off"
+                spellCheck={false}
+                value={phone ? groupDigits(national, dialMeta(dial).groups) : contact}
+                placeholder={phone ? dialMeta(dial).groups.map((n) => "0".repeat(n)).join(" ") : copy.phTelegram}
+                onChange={(e) => {
+                  if (phone) {
+                    const parsed = parsePhone(e.target.value, dial);
+                    setDial(parsed.dial);
+                    setNational(parsed.national);
+                  } else {
+                    setContact(formatTelegram(e.target.value));
+                  }
+                  setInvalid(false);
+                  setState("idle");
+                }}
+                className="h-12 min-w-0 flex-1 rounded-2xl border border-line bg-paper px-4 font-medium"
+              />
+            </div>
             {invalid ? <p className="text-sm text-copper">{copy.badContact}</p> : null}
           </div>
           <label className="grid gap-1 text-sm font-semibold">
@@ -739,19 +889,60 @@ function Request({ lang }: { lang: Lang }) {
 
 type Channel = "phone" | "telegram" | "viber" | "whatsapp";
 
-function formatPhone(value: string) {
-  let digits = value.replace(/\D/g, "");
-  if (digits.startsWith("00")) digits = digits.slice(2);
-  if (digits.startsWith("0")) digits = `381${digits.slice(1)}`;
-  if (digits.length > 0 && !digits.startsWith("381") && digits.length <= 9) digits = `381${digits}`;
-  digits = digits.slice(0, 15);
-  if (!digits) return "";
-  if (digits.startsWith("381")) {
-    const national = digits.slice(3, 12);
-    const parts = [national.slice(0, 2), national.slice(2, 5), national.slice(5, 9)].filter(Boolean);
-    return parts.length ? `+381 ${parts.join(" ")}` : "+381 ";
+const DIALS: { iso: string; dial: string; min: number; max: number; groups: number[]; name: Record<Lang, string> }[] = [
+  { iso: "RS", dial: "381", min: 8, max: 9, groups: [2, 3, 4], name: { ru: "Сербия", en: "Serbia", sr: "Srbija" } },
+  { iso: "ME", dial: "382", min: 8, max: 8, groups: [2, 3, 3], name: { ru: "Черногория", en: "Montenegro", sr: "Crna Gora" } },
+  { iso: "BA", dial: "387", min: 8, max: 8, groups: [2, 3, 3], name: { ru: "Босния", en: "Bosnia", sr: "Bosna" } },
+  { iso: "HR", dial: "385", min: 8, max: 9, groups: [2, 3, 4], name: { ru: "Хорватия", en: "Croatia", sr: "Hrvatska" } },
+  { iso: "SI", dial: "386", min: 8, max: 8, groups: [2, 3, 3], name: { ru: "Словения", en: "Slovenia", sr: "Slovenija" } },
+  { iso: "MK", dial: "389", min: 8, max: 8, groups: [2, 3, 3], name: { ru: "Македония", en: "N. Macedonia", sr: "Makedonija" } },
+  { iso: "HU", dial: "36", min: 8, max: 9, groups: [2, 3, 4], name: { ru: "Венгрия", en: "Hungary", sr: "Mađarska" } },
+  { iso: "RO", dial: "40", min: 9, max: 9, groups: [3, 3, 3], name: { ru: "Румыния", en: "Romania", sr: "Rumunija" } },
+  { iso: "BG", dial: "359", min: 8, max: 9, groups: [2, 3, 4], name: { ru: "Болгария", en: "Bulgaria", sr: "Bugarska" } },
+  { iso: "UA", dial: "380", min: 9, max: 9, groups: [2, 3, 4], name: { ru: "Украина", en: "Ukraine", sr: "Ukrajina" } },
+  { iso: "RU", dial: "7", min: 10, max: 10, groups: [3, 3, 2, 2], name: { ru: "Россия", en: "Russia", sr: "Rusija" } },
+  { iso: "GE", dial: "995", min: 9, max: 9, groups: [3, 2, 2, 2], name: { ru: "Грузия", en: "Georgia", sr: "Gruzija" } },
+  { iso: "DE", dial: "49", min: 10, max: 11, groups: [3, 3, 4], name: { ru: "Германия", en: "Germany", sr: "Nemačka" } },
+  { iso: "AT", dial: "43", min: 9, max: 11, groups: [3, 3, 4], name: { ru: "Австрия", en: "Austria", sr: "Austrija" } },
+  { iso: "IT", dial: "39", min: 9, max: 10, groups: [3, 3, 4], name: { ru: "Италия", en: "Italy", sr: "Italija" } },
+  { iso: "GR", dial: "30", min: 10, max: 10, groups: [3, 3, 4], name: { ru: "Греция", en: "Greece", sr: "Grčka" } },
+  { iso: "TR", dial: "90", min: 10, max: 10, groups: [3, 3, 4], name: { ru: "Турция", en: "Turkey", sr: "Turska" } },
+];
+
+function dialMeta(dial: string) {
+  return DIALS.find((item) => item.dial === dial) ?? DIALS[0];
+}
+
+function groupDigits(digits: string, groups: number[]) {
+  const parts: string[] = [];
+  let index = 0;
+  for (const size of groups) {
+    if (index >= digits.length) break;
+    parts.push(digits.slice(index, index + size));
+    index += size;
   }
-  return `+${digits}`;
+  if (index < digits.length) parts.push(digits.slice(index));
+  return parts.join(" ");
+}
+
+function parsePhone(raw: string, dial: string) {
+  const international = raw.trim().startsWith("+") || raw.trim().startsWith("00");
+  let digits = raw.replace(/\D/g, "");
+  if (digits.startsWith("00")) digits = digits.slice(2);
+  if (international) {
+    const found = [...DIALS].sort((a, b) => b.dial.length - a.dial.length).find((item) => digits.startsWith(item.dial));
+    if (found) {
+      return { dial: found.dial, national: digits.slice(found.dial.length).replace(/^0/, "").slice(0, found.max) };
+    }
+  }
+  if (digits.startsWith("0")) digits = digits.slice(1);
+  const meta = dialMeta(dial);
+  return { dial, national: digits.slice(0, meta.max) };
+}
+
+function fullPhone(dial: string, national: string) {
+  const spaced = groupDigits(national, dialMeta(dial).groups);
+  return spaced ? `+${dial} ${spaced}` : "";
 }
 
 function formatTelegram(value: string) {
@@ -762,8 +953,10 @@ function formatTelegram(value: string) {
   return body ? `@${body}` : "";
 }
 
-function validContact(channel: Channel, contact: string) {
+function validContact(channel: Channel, contact: string, dial: string, national: string) {
   if (channel === "telegram") return /^@[a-zA-Z][a-zA-Z0-9_]{4,31}$/.test(contact);
+  const meta = dialMeta(dial);
   const digits = contact.replace(/\D/g, "");
-  return digits.length >= 11 && digits.length <= 15;
+  return national.length >= meta.min && national.length <= meta.max && digits.length >= 8 && digits.length <= 15;
 }
+
