@@ -827,8 +827,15 @@ function Request({ lang, quote }: { lang: Lang; quote: string | null }) {
   const [contact, setContact] = useState("");
   const [comment, setComment] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [toast, setToast] = useState<"sent" | "error" | null>(null);
   const [invalid, setInvalid] = useState(false);
   const phone = channel !== "telegram";
+
+  useEffect(() => {
+    if (!toast) return;
+    const id = window.setTimeout(() => setToast(null), 7000);
+    return () => window.clearTimeout(id);
+  }, [toast]);
 
   function pick(next: Channel) {
     setChannel(next);
@@ -850,8 +857,10 @@ function Request({ lang, quote }: { lang: Lang; quote: string | null }) {
     try {
       const result = await sendLead({ data: { channel, contact: value, comment, quote: quote ?? "" } });
       setState(result.ok ? "sent" : "error");
+      setToast(result.ok ? "sent" : "error");
     } catch {
       setState("error");
+      setToast("error");
     }
   }
 
@@ -863,6 +872,7 @@ function Request({ lang, quote }: { lang: Lang; quote: string | null }) {
   ];
 
   return (
+    <>
     <section id="request" className="border-t border-line bg-cream">
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 lg:grid-cols-2">
         <div>
@@ -953,11 +963,18 @@ function Request({ lang, quote }: { lang: Lang; quote: string | null }) {
           >
             {copy.send}
           </button>
-          {state === "sent" ? <p className="text-sm text-muted">{copy.sent}</p> : null}
-          {state === "error" ? <p className="text-sm text-copper">{copy.sendError}</p> : null}
         </form>
       </div>
     </section>
+    {toast ? (
+      <div
+        role="status"
+        className="fixed bottom-24 right-4 z-50 w-[min(20rem,calc(100%-2rem))] rounded-2xl bg-ink p-4 text-cream shadow-xl sm:bottom-6"
+      >
+        <p className="font-display text-lg font-bold leading-tight">{toast === "sent" ? copy.sent : copy.sendError}</p>
+      </div>
+    ) : null}
+    </>
   );
 }
 
