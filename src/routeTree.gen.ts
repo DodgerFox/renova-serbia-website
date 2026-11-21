@@ -14,6 +14,17 @@ import { Route as EnRouteImport } from './routes/en'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SrRouteImport } from './routes/sr'
+import { Route as ArticlesIndexRouteImport } from './routes/articles.index'
+import { Route as ArticlesSlugRouteImport } from './routes/articles.$slug'
+import { Route as EnIndexRouteImport } from './routes/en.index'
+import { Route as SrIndexRouteImport } from './routes/sr.index'
+import { Route as ArticlesCategoryIdRouteImport } from './routes/articles.category.$id'
+import { Route as EnArticlesIndexRouteImport } from './routes/en.articles.index'
+import { Route as EnArticlesSlugRouteImport } from './routes/en.articles.$slug'
+import { Route as SrArticlesIndexRouteImport } from './routes/sr.articles.index'
+import { Route as SrArticlesSlugRouteImport } from './routes/sr.articles.$slug'
+import { Route as EnArticlesCategoryIdRouteImport } from './routes/en.articles.category.$id'
+import { Route as SrArticlesCategoryIdRouteImport } from './routes/sr.articles.category.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,43 +51,179 @@ const SrRoute = SrRouteImport.update({
   path: '/sr',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArticlesIndexRoute = ArticlesIndexRouteImport.update({
+  id: '/articles/',
+  path: '/articles/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticlesSlugRoute = ArticlesSlugRouteImport.update({
+  id: '/articles/$slug',
+  path: '/articles/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnIndexRoute = EnIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EnRoute,
+} as any)
+const SrIndexRoute = SrIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SrRoute,
+} as any)
+const ArticlesCategoryIdRoute = ArticlesCategoryIdRouteImport.update({
+  id: '/articles/category/$id',
+  path: '/articles/category/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnArticlesIndexRoute = EnArticlesIndexRouteImport.update({
+  id: '/articles/',
+  path: '/articles/',
+  getParentRoute: () => EnRoute,
+} as any)
+const EnArticlesSlugRoute = EnArticlesSlugRouteImport.update({
+  id: '/articles/$slug',
+  path: '/articles/$slug',
+  getParentRoute: () => EnRoute,
+} as any)
+const SrArticlesIndexRoute = SrArticlesIndexRouteImport.update({
+  id: '/articles/',
+  path: '/articles/',
+  getParentRoute: () => SrRoute,
+} as any)
+const SrArticlesSlugRoute = SrArticlesSlugRouteImport.update({
+  id: '/articles/$slug',
+  path: '/articles/$slug',
+  getParentRoute: () => SrRoute,
+} as any)
+const EnArticlesCategoryIdRoute = EnArticlesCategoryIdRouteImport.update({
+  id: '/articles/category/$id',
+  path: '/articles/category/$id',
+  getParentRoute: () => EnRoute,
+} as any)
+const SrArticlesCategoryIdRoute = SrArticlesCategoryIdRouteImport.update({
+  id: '/articles/category/$id',
+  path: '/articles/category/$id',
+  getParentRoute: () => SrRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/en': typeof EnRoute
+  '/en': typeof EnRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/sr': typeof SrRoute
+  '/sr': typeof SrRouteWithChildren
+  '/articles/$slug': typeof ArticlesSlugRoute
+  '/articles/': typeof ArticlesIndexRoute
+  '/en/': typeof EnIndexRoute
+  '/sr/': typeof SrIndexRoute
+  '/articles/category/$id': typeof ArticlesCategoryIdRoute
+  '/en/articles/$slug': typeof EnArticlesSlugRoute
+  '/sr/articles/$slug': typeof SrArticlesSlugRoute
+  '/en/articles/': typeof EnArticlesIndexRoute
+  '/sr/articles/': typeof SrArticlesIndexRoute
+  '/en/articles/category/$id': typeof EnArticlesCategoryIdRoute
+  '/sr/articles/category/$id': typeof SrArticlesCategoryIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/en': typeof EnRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/sr': typeof SrRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
+  '/articles': typeof ArticlesIndexRoute
+  '/en': typeof EnIndexRoute
+  '/sr': typeof SrIndexRoute
+  '/articles/category/$id': typeof ArticlesCategoryIdRoute
+  '/en/articles/$slug': typeof EnArticlesSlugRoute
+  '/sr/articles/$slug': typeof SrArticlesSlugRoute
+  '/en/articles': typeof EnArticlesIndexRoute
+  '/sr/articles': typeof SrArticlesIndexRoute
+  '/en/articles/category/$id': typeof EnArticlesCategoryIdRoute
+  '/sr/articles/category/$id': typeof SrArticlesCategoryIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/en': typeof EnRoute
+  '/en': typeof EnRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/sr': typeof SrRoute
+  '/sr': typeof SrRouteWithChildren
+  '/articles/$slug': typeof ArticlesSlugRoute
+  '/articles/': typeof ArticlesIndexRoute
+  '/en/': typeof EnIndexRoute
+  '/sr/': typeof SrIndexRoute
+  '/articles/category/$id': typeof ArticlesCategoryIdRoute
+  '/en/articles/$slug': typeof EnArticlesSlugRoute
+  '/sr/articles/$slug': typeof SrArticlesSlugRoute
+  '/en/articles/': typeof EnArticlesIndexRoute
+  '/sr/articles/': typeof SrArticlesIndexRoute
+  '/en/articles/category/$id': typeof EnArticlesCategoryIdRoute
+  '/sr/articles/category/$id': typeof SrArticlesCategoryIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/en' | '/robots.txt' | '/sitemap.xml' | '/sr'
+  fullPaths:
+    | '/'
+    | '/en'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/sr'
+    | '/articles/$slug'
+    | '/articles/'
+    | '/en/'
+    | '/sr/'
+    | '/articles/category/$id'
+    | '/en/articles/$slug'
+    | '/sr/articles/$slug'
+    | '/en/articles/'
+    | '/sr/articles/'
+    | '/en/articles/category/$id'
+    | '/sr/articles/category/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/en' | '/robots.txt' | '/sitemap.xml' | '/sr'
-  id: '__root__' | '/' | '/en' | '/robots.txt' | '/sitemap.xml' | '/sr'
+  to:
+    | '/'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/articles/$slug'
+    | '/articles'
+    | '/en'
+    | '/sr'
+    | '/articles/category/$id'
+    | '/en/articles/$slug'
+    | '/sr/articles/$slug'
+    | '/en/articles'
+    | '/sr/articles'
+    | '/en/articles/category/$id'
+    | '/sr/articles/category/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/en'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/sr'
+    | '/articles/$slug'
+    | '/articles/'
+    | '/en/'
+    | '/sr/'
+    | '/articles/category/$id'
+    | '/en/articles/$slug'
+    | '/sr/articles/$slug'
+    | '/en/articles/'
+    | '/sr/articles/'
+    | '/en/articles/category/$id'
+    | '/sr/articles/category/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  EnRoute: typeof EnRoute
+  EnRoute: typeof EnRouteWithChildren
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  SrRoute: typeof SrRoute
+  SrRoute: typeof SrRouteWithChildren
+  ArticlesSlugRoute: typeof ArticlesSlugRoute
+  ArticlesIndexRoute: typeof ArticlesIndexRoute
+  ArticlesCategoryIdRoute: typeof ArticlesCategoryIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,15 +263,127 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SrRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/articles/': {
+      id: '/articles/'
+      path: '/articles'
+      fullPath: '/articles/'
+      preLoaderRoute: typeof ArticlesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/articles/$slug': {
+      id: '/articles/$slug'
+      path: '/articles/$slug'
+      fullPath: '/articles/$slug'
+      preLoaderRoute: typeof ArticlesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/en/': {
+      id: '/en/'
+      path: '/'
+      fullPath: '/en/'
+      preLoaderRoute: typeof EnIndexRouteImport
+      parentRoute: typeof EnRoute
+    }
+    '/sr/': {
+      id: '/sr/'
+      path: '/'
+      fullPath: '/sr/'
+      preLoaderRoute: typeof SrIndexRouteImport
+      parentRoute: typeof SrRoute
+    }
+    '/articles/category/$id': {
+      id: '/articles/category/$id'
+      path: '/articles/category/$id'
+      fullPath: '/articles/category/$id'
+      preLoaderRoute: typeof ArticlesCategoryIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/en/articles/': {
+      id: '/en/articles/'
+      path: '/articles'
+      fullPath: '/en/articles/'
+      preLoaderRoute: typeof EnArticlesIndexRouteImport
+      parentRoute: typeof EnRoute
+    }
+    '/en/articles/$slug': {
+      id: '/en/articles/$slug'
+      path: '/articles/$slug'
+      fullPath: '/en/articles/$slug'
+      preLoaderRoute: typeof EnArticlesSlugRouteImport
+      parentRoute: typeof EnRoute
+    }
+    '/sr/articles/': {
+      id: '/sr/articles/'
+      path: '/articles'
+      fullPath: '/sr/articles/'
+      preLoaderRoute: typeof SrArticlesIndexRouteImport
+      parentRoute: typeof SrRoute
+    }
+    '/sr/articles/$slug': {
+      id: '/sr/articles/$slug'
+      path: '/articles/$slug'
+      fullPath: '/sr/articles/$slug'
+      preLoaderRoute: typeof SrArticlesSlugRouteImport
+      parentRoute: typeof SrRoute
+    }
+    '/en/articles/category/$id': {
+      id: '/en/articles/category/$id'
+      path: '/articles/category/$id'
+      fullPath: '/en/articles/category/$id'
+      preLoaderRoute: typeof EnArticlesCategoryIdRouteImport
+      parentRoute: typeof EnRoute
+    }
+    '/sr/articles/category/$id': {
+      id: '/sr/articles/category/$id'
+      path: '/articles/category/$id'
+      fullPath: '/sr/articles/category/$id'
+      preLoaderRoute: typeof SrArticlesCategoryIdRouteImport
+      parentRoute: typeof SrRoute
+    }
   }
 }
 
+interface EnRouteChildren {
+  EnIndexRoute: typeof EnIndexRoute
+  EnArticlesSlugRoute: typeof EnArticlesSlugRoute
+  EnArticlesIndexRoute: typeof EnArticlesIndexRoute
+  EnArticlesCategoryIdRoute: typeof EnArticlesCategoryIdRoute
+}
+
+const EnRouteChildren: EnRouteChildren = {
+  EnIndexRoute: EnIndexRoute,
+  EnArticlesSlugRoute: EnArticlesSlugRoute,
+  EnArticlesIndexRoute: EnArticlesIndexRoute,
+  EnArticlesCategoryIdRoute: EnArticlesCategoryIdRoute,
+}
+
+const EnRouteWithChildren = EnRoute._addFileChildren(EnRouteChildren)
+
+interface SrRouteChildren {
+  SrIndexRoute: typeof SrIndexRoute
+  SrArticlesSlugRoute: typeof SrArticlesSlugRoute
+  SrArticlesIndexRoute: typeof SrArticlesIndexRoute
+  SrArticlesCategoryIdRoute: typeof SrArticlesCategoryIdRoute
+}
+
+const SrRouteChildren: SrRouteChildren = {
+  SrIndexRoute: SrIndexRoute,
+  SrArticlesSlugRoute: SrArticlesSlugRoute,
+  SrArticlesIndexRoute: SrArticlesIndexRoute,
+  SrArticlesCategoryIdRoute: SrArticlesCategoryIdRoute,
+}
+
+const SrRouteWithChildren = SrRoute._addFileChildren(SrRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  EnRoute: EnRoute,
+  EnRoute: EnRouteWithChildren,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  SrRoute: SrRoute,
+  SrRoute: SrRouteWithChildren,
+  ArticlesSlugRoute: ArticlesSlugRoute,
+  ArticlesIndexRoute: ArticlesIndexRoute,
+  ArticlesCategoryIdRoute: ArticlesCategoryIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,4 +1,11 @@
 import {
+  articlePath,
+  articles,
+  articlesPath,
+  categories,
+  categoryPath,
+} from "@/data/articles";
+import {
   EMAIL,
   PHONE_DISPLAY,
   TELEGRAM_URL,
@@ -155,15 +162,36 @@ function jsonLd(lang: Lang, origin: string, url: string) {
 }
 
 export function sitemapXml(origin: string) {
-  const urls = (["ru", "en", "sr"] as const)
-    .map((lang) => {
+  const entries: { path: string; alternates: Record<Lang, string>; priority: string }[] = [];
+  for (const lang of ["ru", "en", "sr"] as const) {
+    entries.push({
+      path: paths[lang],
+      alternates: { ru: "/", en: "/en", sr: "/sr" },
+      priority: lang === "ru" ? "1.0" : "0.8",
+    });
+  }
+  const journal = (pathOf: (lang: Lang) => string, priority: string) => {
+    for (const lang of ["ru", "en", "sr"] as const) {
+      entries.push({
+        path: pathOf(lang),
+        alternates: { ru: pathOf("ru"), en: pathOf("en"), sr: pathOf("sr") },
+        priority,
+      });
+    }
+  };
+  journal(articlesPath, "0.8");
+  for (const category of categories) {
+    journal((lang) => categoryPath(lang, category.id), "0.6");
+  }
+  for (const article of articles) {
+    journal((lang) => articlePath(lang, article.slug), "0.7");
+  }
+  const urls = entries
+    .map((entry) => {
       const alternates = (["ru", "en", "sr"] as const)
-        .map(
-          (code) =>
-            `    <xhtml:link rel="alternate" hreflang="${code}" href="${origin}${paths[code]}"/>`,
-        )
+        .map((code) => `    <xhtml:link rel="alternate" hreflang="${code}" href="${origin}${entry.alternates[code]}"/>`)
         .join("\n");
-      return `  <url>\n    <loc>${origin}${paths[lang]}</loc>\n${alternates}\n    <xhtml:link rel="alternate" hreflang="x-default" href="${origin}/"/>\n    <changefreq>weekly</changefreq>\n    <priority>${lang === "ru" ? "1.0" : "0.8"}</priority>\n  </url>`;
+      return `  <url>\n    <loc>${origin}${entry.path}</loc>\n${alternates}\n    <xhtml:link rel="alternate" hreflang="x-default" href="${origin}${entry.alternates.ru}"/>\n    <changefreq>weekly</changefreq>\n    <priority>${entry.priority}</priority>\n  </url>`;
     })
     .join("\n");
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls}\n</urlset>\n`;

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Check, ChevronDown, ChevronLeft, ChevronRight, Mail, Menu, MessageCircle, Phone, Ruler, Send, X } from "lucide-react";
+import { articles, articlePath, articlesPath, categories, journalCopy } from "@/data/articles";
 import { sendLead } from "@/lib/lead";
 import {
   crewConditions,
@@ -72,6 +73,9 @@ export function HomePage({ lang }: { lang: Lang }) {
                 {label}
               </a>
             ))}
+            <a href={articlesPath(lang)} className="transition-colors hover:text-ink">
+              {journalCopy[lang].nav}
+            </a>
           </nav>
           <div className="flex items-center gap-2">
             <LangSwitch lang={lang} />
@@ -105,6 +109,9 @@ export function HomePage({ lang }: { lang: Lang }) {
                 {label}
               </a>
             ))}
+            <a href={articlesPath(lang)} className="block py-3 text-base" onClick={() => setOpen(false)}>
+              {journalCopy[lang].nav}
+            </a>
           </nav>
         ) : null}
       </header>
@@ -209,6 +216,28 @@ export function HomePage({ lang }: { lang: Lang }) {
         </section>
 
         <Jobs lang={lang} onContact={openContact} />
+
+        <section id="journal" className="mx-auto max-w-6xl px-5 py-16">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <h2 className="max-w-md font-display text-4xl font-bold">{journalCopy[lang].title}</h2>
+            <a href={articlesPath(lang)} className="text-sm font-semibold text-copper">
+              {journalCopy[lang].nav}
+            </a>
+          </div>
+          <p className="mt-3 max-w-xl text-muted">{journalCopy[lang].lead}</p>
+          <ul className="mt-8 grid gap-4 sm:grid-cols-3">
+            {articles.slice(0, 3).map((item) => (
+              <li key={item.slug}>
+                <a href={articlePath(lang, item.slug)} className="block h-full rounded-card border border-line bg-cream p-5">
+                  <p className="text-sm font-semibold text-copper">
+                    {categories.find((category) => category.id === item.category)?.title[lang]}
+                  </p>
+                  <h3 className="mt-2 font-display text-xl font-bold leading-tight">{item.title[lang]}</h3>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         <section id="faq" className="mx-auto max-w-6xl px-5 py-16">
           <h2 className="font-display text-4xl font-bold">{copy.faqTitle}</h2>
