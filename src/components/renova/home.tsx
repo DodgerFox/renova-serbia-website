@@ -90,6 +90,8 @@ export function HomePage({ lang }: { lang: Lang }) {
             <button
               type="button"
               className="grid size-11 place-items-center rounded-full border border-line xl:hidden"
+              aria-expanded={open}
+              aria-controls="site-menu"
               aria-label={open ? copy.menuClose : copy.menuOpen}
               onClick={() => setOpen((v) => !v)}
             >
@@ -98,7 +100,7 @@ export function HomePage({ lang }: { lang: Lang }) {
           </div>
         </div>
         {open ? (
-          <nav className="border-t border-line px-5 py-3 xl:hidden">
+          <nav id="site-menu" className="border-t border-line px-5 py-3 xl:hidden">
             {copy.nav.map((label, i) => (
               <a
                 key={navHref[i]}
@@ -345,7 +347,7 @@ function Jobs({ lang, onContact }: { lang: Lang; onContact: (message: string) =>
         </ul>
         <p className="mt-6 text-sm text-muted">
           {copy.applyNote}{" "}
-          <a href={TELEGRAM_URL} className="font-semibold text-ink" target="_blank" rel="noreferrer">
+          <a href={TELEGRAM_URL} className="font-semibold text-ink" target="_blank" rel="noopener noreferrer">
             {TELEGRAM_LABEL}
           </a>
         </p>
@@ -370,12 +372,19 @@ function ContactModal({
   onClose: () => void;
 }) {
   const copy = contactCopy[lang];
+  const closeRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeRef.current?.focus();
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = previous;
+    };
   }, [onClose]);
 
   const channels = [
@@ -422,6 +431,7 @@ function ContactModal({
             <p className="mt-2 text-sm text-muted">{copy.lead}</p>
           </div>
           <button
+            ref={closeRef}
             type="button"
             onClick={onClose}
             aria-label={copy.close}
@@ -438,7 +448,7 @@ function ContactModal({
                 <a
                   href={channel.href}
                   target={channel.external ? "_blank" : undefined}
-                  rel={channel.external ? "noreferrer" : undefined}
+                  rel={channel.external ? "noopener noreferrer" : undefined}
                   onClick={() => {
                     if (channel.copy && message) navigator.clipboard?.writeText(message).catch(() => undefined);
                     onClose();
@@ -464,7 +474,7 @@ function ContactModal({
 
 function LangSwitch({ lang }: { lang: Lang }) {
   return (
-    <div className="flex h-11 items-center rounded-full border border-line p-1 text-xs font-bold">
+    <div className="flex h-11 items-center rounded-full border border-line p-1 text-xs font-bold" role="group" aria-label={lang === "en" ? "Language" : lang === "sr" ? "Jezik" : "Язык"}>
       {langs.map((code) => (
         <Link
           key={code}
@@ -486,7 +496,7 @@ function Contacts() {
         <Phone className="size-4 text-copper" />
         {PHONE_DISPLAY}
       </a>
-      <a href={TELEGRAM_URL} className="inline-flex items-center gap-1.5" target="_blank" rel="noreferrer">
+      <a href={TELEGRAM_URL} className="inline-flex items-center gap-1.5" target="_blank" rel="noopener noreferrer">
         <Send className="size-4 text-copper" />
         {TELEGRAM_LABEL}
       </a>
@@ -523,7 +533,19 @@ function WorkSlider({ lang }: { lang: Lang }) {
   const go = (next: number) => setIndex((next + count) % count);
 
   return (
-    <div className="min-w-0 lg:col-span-6">
+    <div
+      className="min-w-0 lg:col-span-6 outline-none"
+      role="region"
+      aria-roledescription={lang === "en" ? "carousel" : lang === "sr" ? "karusel" : "карусель"}
+      aria-label={slide.title[lang]}
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        event.preventDefault();
+        setPaused(true);
+        go(event.key === "ArrowLeft" ? index - 1 : index + 1);
+      }}
+    >
       <div
         className="relative"
         onTouchStart={(e) => {
@@ -721,6 +743,7 @@ function QuoteModal({ lang, onClose, onLock }: { lang: Lang; onClose: () => void
   const [picked, setPicked] = useState<Record<string, string>>({});
   const locale = lang === "en" ? "en-GB" : "ru-RU";
 
+  const closeRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
@@ -728,6 +751,7 @@ function QuoteModal({ lang, onClose, onLock }: { lang: Lang; onClose: () => void
     document.addEventListener("keydown", onKey);
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    closeRef.current?.focus();
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = previous;
@@ -762,7 +786,7 @@ function QuoteModal({ lang, onClose, onLock }: { lang: Lang; onClose: () => void
             </h2>
             <p className="mt-2 text-sm text-muted">{copy.quoteLead}</p>
           </div>
-          <button type="button" onClick={onClose} aria-label={copy.close} className="grid size-10 shrink-0 place-items-center rounded-full border border-line">
+          <button type="button" ref={closeRef} onClick={onClose} aria-label={copy.close} className="grid size-10 shrink-0 place-items-center rounded-full border border-line">
             <X className="size-4" />
           </button>
         </div>
@@ -900,7 +924,7 @@ function Request({ lang, quote }: { lang: Lang; quote: string | null }) {
         </div>
         <form onSubmit={submit} className="grid gap-3">
           <div className="grid gap-2">
-            <span className="text-sm font-semibold">{copy.contact}</span>
+            <label htmlFor="lead-contact" className="text-sm font-semibold">{copy.contact}</label>
             <div className="flex flex-wrap gap-2">
               {channels.map((item) => (
                 <button
@@ -937,7 +961,10 @@ function Request({ lang, quote }: { lang: Lang; quote: string | null }) {
                 </select>
               ) : null}
               <input
+                id="lead-contact"
                 required
+                aria-invalid={invalid || undefined}
+                aria-describedby={invalid ? "lead-contact-error" : undefined}
                 inputMode={phone ? "tel" : "text"}
                 autoComplete={phone ? "tel" : "off"}
                 autoCapitalize="off"
@@ -958,7 +985,7 @@ function Request({ lang, quote }: { lang: Lang; quote: string | null }) {
                 className="h-12 min-w-0 flex-1 rounded-2xl border border-line bg-paper px-4 font-medium"
               />
             </div>
-            {invalid ? <p className="text-sm text-copper">{copy.badContact}</p> : null}
+            {invalid ? <p id="lead-contact-error" role="alert" className="text-sm text-copper">{copy.badContact}</p> : null}
           </div>
           <label className="grid gap-1 text-sm font-semibold">
             {copy.note}
@@ -975,9 +1002,10 @@ function Request({ lang, quote }: { lang: Lang; quote: string | null }) {
           <button
             type="submit"
             disabled={state === "sending"}
+            aria-busy={state === "sending"}
             className="h-12 rounded-full bg-ink font-semibold text-cream disabled:opacity-60"
           >
-            {copy.send}
+            {state === "sending" ? copy.sending : copy.send}
           </button>
         </form>
       </div>

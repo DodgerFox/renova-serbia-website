@@ -188,7 +188,13 @@ function Shell({ lang, tail, children }: { lang: Lang; tail: string; children: R
             </a>
             <span className="flex gap-2 text-muted">
               {langs.map((code) => (
-                <a key={code} href={`${articlesPath(code)}${tail}`} className={code === lang ? "font-semibold text-ink" : ""}>
+                <a
+                  key={code}
+                  href={`${articlesPath(code)}${tail}`}
+                  className={code === lang ? "font-semibold text-ink" : ""}
+                  aria-current={code === lang ? "page" : undefined}
+                  hrefLang={code}
+                >
                   {code.toUpperCase()}
                 </a>
               ))}

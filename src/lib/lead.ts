@@ -48,10 +48,17 @@ export const sendLead = createServerFn({ method: "POST" })
       .filter(Boolean)
       .join("\n");
 
+    if (lastSent.size > 400) {
+      for (const [sentKey, sentAt] of lastSent) {
+        if (now - sentAt > 60_000) lastSent.delete(sentKey);
+      }
+    }
+
     const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ chat_id: chatId, text }),
+      signal: AbortSignal.timeout(8_000),
     });
     if (!response.ok) return { ok: false as const };
     lastSent.set(key, now);
