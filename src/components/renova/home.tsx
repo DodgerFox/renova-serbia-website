@@ -204,7 +204,15 @@ export function HomePage({ lang }: { lang: Lang }) {
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {gallery.map((shot) => (
                 <figure key={shot.src} className="overflow-hidden rounded-card bg-ink">
-                  <img src={shot.src} alt={shot.title[lang]} className="aspect-video w-full object-cover" />
+                  <img
+                    src={shot.src}
+                    alt={shot.title[lang]}
+                    width={1280}
+                    height={720}
+                    loading="lazy"
+                    decoding="async"
+                    className="aspect-video w-full object-cover"
+                  />
                   <figcaption className="px-1 py-4">
                     <p className="font-display text-lg font-bold">{shot.title[lang]}</p>
                     <p className="text-sm text-sand">{shot.caption[lang]}</p>
@@ -528,7 +536,15 @@ function WorkSlider({ lang }: { lang: Lang }) {
           if (dx < -40) go(index + 1);
         }}
       >
-        <img src={slide.src} alt={slide.title[lang]} className="aspect-video w-full rounded-card object-cover" />
+        <img
+          src={slide.src}
+          alt={slide.title[lang]}
+          width={1280}
+          height={720}
+          fetchPriority={index === 0 ? "high" : "low"}
+          decoding="async"
+          className="aspect-video w-full rounded-card object-cover"
+        />
         <div className="absolute bottom-4 left-4 right-4 rounded-2xl bg-ink/90 p-4 text-cream sm:right-auto sm:max-w-xs">
           <p className="text-xs uppercase tracking-widest text-sand">{slide.kicker[lang]}</p>
           <p className="mt-1 font-display text-lg font-bold">{slide.title[lang]}</p>

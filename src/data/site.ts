@@ -51,28 +51,28 @@ export const faqs: { q: L; a: L }[] = [
 
 export const showcases: { src: string; label: L; kicker: L; title: L; text: L }[] = [
   {
-    src: "/photos/hero-clean.jpg",
+    src: "/photos/hero-clean.webp",
     label: t("Под чистовую", "To finish", "Za završnicu"),
     kicker: t("Квартиры", "Apartments", "Stanovi"),
     title: t("Подготовка под чистовую", "Ready for the finish", "Priprema za završnicu"),
     text: t("Новостройка: стены, стяжка и инженерия до покраски и пола.", "A new flat: walls, screed and services, before paint and floors.", "Novogradnja: zidovi, košuljica i instalacije, pre krečenja i poda."),
   },
   {
-    src: "/photos/commercial.jpg",
+    src: "/photos/commercial.webp",
     label: t("Коммерция", "Commercial", "Komercijala"),
     kicker: t("Помещения", "Premises", "Lokali"),
     title: t("Офис, кафе, магазин", "Office, café, shop", "Kancelarija, kafić, radnja"),
     text: t("Отделка коммерции под сдачу арендатору или под открытие.", "A commercial fit-out for a tenant handover or an opening.", "Završnica komercijalnog prostora za predaju zakupcu ili otvaranje."),
   },
   {
-    src: "/photos/bath-finish.jpg",
+    src: "/photos/bath-finish.webp",
     label: t("Санузел", "Bathroom", "Kupatilo"),
     kicker: t("Мокрые зоны", "Wet rooms", "Mokre zone"),
     title: t("Санузел под ключ", "A full bathroom", "Kupatilo ključ u ruke"),
     text: t("Гидроизоляция, скрытая разводка, плитка и подключение сантехники.", "Tanking, concealed pipes, tile and fitting the sanitaryware.", "Hidroizolacija, skrivena instalacija, pločice i priključak sanitarija."),
   },
   {
-    src: "/photos/kitchen-finish.jpg",
+    src: "/photos/kitchen-finish.webp",
     label: t("Кухня", "Kitchen", "Kuhinja"),
     kicker: t("Кухни", "Kitchens", "Kuhinje"),
     title: t("Кухня без мебели", "Kitchen, furniture aside", "Kuhinja bez nameštaja"),
@@ -81,12 +81,12 @@ export const showcases: { src: string; label: L; kicker: L; title: L; text: L }[
 ];
 
 export const gallery: { src: string; title: L; caption: L }[] = [
-  { src: "/photos/bath.jpg", title: t("Санузел", "Bathroom", "Kupatilo"), caption: t("Плитка, скрытая сантехника, ниша", "Tile, concealed plumbing, niche", "Pločice, skrivena instalacija, niša") },
-  { src: "/photos/kitchen.jpg", title: t("Кухня", "Kitchen", "Kuhinja"), caption: t("Чистовая отделка и столешница", "Finish and worktop", "Završna obrada i radna ploča") },
-  { src: "/photos/living.jpg", title: t("Комнаты", "Rooms", "Sobe"), caption: t("Шпаклёвка и покраска", "Skim and paint", "Glet i krečenje") },
-  { src: "/photos/tile-laid.jpg", title: t("Плитка", "Tile", "Pločice"), caption: t("Крупный формат, ровная плоскость", "Large format, flat plane", "Veliki format, ravna površina") },
-  { src: "/photos/plaster.jpg", title: t("Штукатурка", "Plaster", "Malter"), caption: t("Стены под чистовую", "Walls ready to finish", "Zidovi spremni za završnicu") },
-  { src: "/photos/hero-clean.jpg", title: t("Подготовка", "Prep", "Priprema"), caption: t("Объект до чистовых работ", "Before the finish coats", "Pre završnih radova") },
+  { src: "/photos/bath.webp", title: t("Санузел", "Bathroom", "Kupatilo"), caption: t("Плитка, скрытая сантехника, ниша", "Tile, concealed plumbing, niche", "Pločice, skrivena instalacija, niša") },
+  { src: "/photos/kitchen.webp", title: t("Кухня", "Kitchen", "Kuhinja"), caption: t("Чистовая отделка и столешница", "Finish and worktop", "Završna obrada i radna ploča") },
+  { src: "/photos/living.webp", title: t("Комнаты", "Rooms", "Sobe"), caption: t("Шпаклёвка и покраска", "Skim and paint", "Glet i krečenje") },
+  { src: "/photos/tile-laid.webp", title: t("Плитка", "Tile", "Pločice"), caption: t("Крупный формат, ровная плоскость", "Large format, flat plane", "Veliki format, ravna površina") },
+  { src: "/photos/plaster.webp", title: t("Штукатурка", "Plaster", "Malter"), caption: t("Стены под чистовую", "Walls ready to finish", "Zidovi spremni za završnicu") },
+  { src: "/photos/hero-clean.webp", title: t("Подготовка", "Prep", "Priprema"), caption: t("Объект до чистовых работ", "Before the finish coats", "Pre završnih radova") },
 ];
 
 export type JobKind = "cosmetic" | "turnkey" | "bath" | "kitchen";
